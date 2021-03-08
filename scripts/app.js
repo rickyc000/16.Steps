@@ -34,12 +34,12 @@ function init() {
   function handlePlay() {
     if (isPlaying === false) {
       console.log('play!')
-      playheadPosition = 1 
-      // updateCells(playheadPosition)
+      playheadPosition = 1
+      updateCells(playheadPosition)
       startTimer()
       isPlaying = true
     } else {
-      return 
+      return
     }
   }
 
@@ -62,23 +62,35 @@ function init() {
     timerId = setInterval(() => {
       console.log(timerId)
       movePlayhead()
-    }, 1000)
+    }, 200)
   }
 
 
   //* Move playhead
   function movePlayhead() {
-    playheadPosition = playheadPosition + 1  
+    if (playheadPosition == 16) {
+      playheadPosition = 1
+    } else {
+      playheadPosition = playheadPosition + 1
+    }
+    updateCells(playheadPosition)
     console.log(playheadPosition + ' playheadPosition')
   }
 
+  //* Adds 'Active' class to the current column
+  function updateCells(playheadPosition) {
 
-  //* Loop through all cells and if the playheadPosition matches their X coordinate then add the correct class
-  // function updateCells(playheadPosition) {
 
-  // }
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].classList.remove('active')
 
-  
+      if (cells[i].classList.contains(`X${playheadPosition}`)) {
+        cells[i].classList.add('active')
+      }
+    }
+  }
+
+
 
 
 

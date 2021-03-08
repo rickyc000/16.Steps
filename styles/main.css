@@ -35,3 +35,9 @@ html, body {
   /* padding: 10px; */
   border-radius: 100%;
 }
+
+div.active {
+  background-color: rgb(108, 218, 218);
+}
+
+body > div.grid-wrapper > div > div.Y1.X1.active
