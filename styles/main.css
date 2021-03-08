@@ -12,11 +12,12 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  height: 400px;
-  width: 800px;
+  height: 300px;
+  width: 600px;
   /* padding: 10px; */
   /* border: 3px solid rgb(232, 161, 70); */
 }
+
 
 .grid div {
   border: 1px solid rgb(87, 189, 174);
