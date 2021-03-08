@@ -17,7 +17,7 @@ function init() {
     '../assets/sounds/909kit_RideST.mp3',
     '../assets/sounds/909kit_Rim1.mp3',
     '../assets/sounds/909kit_SD1.mp3',
-    '../assets/sounds/909kit_Tom4.mp3',
+    '../assets/sounds/909kit_Tom4.mp3'
   ]
 
 
@@ -33,6 +33,7 @@ function init() {
       for (let column = 1; column <= width; column++) {
         const cell = document.createElement('div')
         cell.classList = `Y${row} X${column}`
+        cell.id = `${(row - 1 ) * 16 + column}`
         grid.appendChild(cell)
         cells.push(cell)
       }
@@ -60,6 +61,7 @@ function init() {
 
 
   function handlePlaySound(channel) {
+    // console.log(event)
     const sound = samples[channel]
     console.log(sound)
     audioTags[channel].src = sound
@@ -131,11 +133,29 @@ function init() {
   }
 
 
+  function toggleStepOnOff(event) {
+    const cellID = event.target.id - 1
+    console.log(event)
+
+    if (cells[cellID].classList.contains('on')) {
+      cells[cellID].classList.remove('on')
+    } else {
+      cells[cellID].classList.add('on')
+    }
+  }
+
 
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
+
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].addEventListener('click', toggleStepOnOff)
+  }
+
+
+  // cells[4].addEventListener('click', handlePlaySound)
 
 }
 
