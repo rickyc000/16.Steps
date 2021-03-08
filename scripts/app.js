@@ -33,7 +33,7 @@ function init() {
       for (let column = 1; column <= width; column++) {
         const cell = document.createElement('div')
         cell.classList = `Y${row} X${column}`
-        cell.id = `${(row - 1 ) * 16 + column}`
+        cell.id = `${(row - 1) * 16 + column}`
         grid.appendChild(cell)
         cells.push(cell)
       }
@@ -54,16 +54,16 @@ function init() {
 
   //* Selecting the audio tags
   const audioTags = []
-  for (let i = 1; i <= channels; i++){
+  for (let i = 1; i <= channels; i++) {
     audioTags[i] = document.querySelector(`.channel${i}`)
   }
-  console.log(audioTags)
+  // console.log(audioTags)
 
 
   function handlePlaySound(channel) {
     // console.log(event)
     const sound = samples[channel]
-    console.log(sound)
+    // console.log(sound)
     audioTags[channel].src = sound
     audioTags[channel].play()
   }
@@ -105,9 +105,9 @@ function init() {
   //* Timer
   function startTimer() {
     timerId = setInterval(() => {
-      console.log(timerId)
+      // console.log(timerId)
       movePlayhead()
-    }, 200)
+    }, 250)
   }
 
 
@@ -119,7 +119,8 @@ function init() {
       playheadPosition = playheadPosition + 1
     }
     updateCells()
-    console.log(playheadPosition + ' playheadPosition')
+    triggersSample()
+    // console.log(playheadPosition + ' playheadPosition')
   }
 
   //* Adds 'Active' class to the current column
@@ -133,14 +134,27 @@ function init() {
   }
 
 
+  //* Turn a STEP on or off
   function toggleStepOnOff(event) {
     const cellID = event.target.id - 1
-    console.log(event)
-
     if (cells[cellID].classList.contains('on')) {
       cells[cellID].classList.remove('on')
     } else {
       cells[cellID].classList.add('on')
+    }
+  }
+
+
+  //* Triggers play sound function
+
+  function triggersSample() {
+    for (let i = 0; i < cells.length; i++) {
+      if (cells[i].classList.contains(`X${playheadPosition}`)
+        && (cells[i].classList.contains('on'))) {
+        const sampleToPlay = cells[i].classList[0]
+        // console.log(sampleToPlay.slice(1))
+        handlePlaySound(sampleToPlay.slice(1))
+      }
     }
   }
 
@@ -155,7 +169,6 @@ function init() {
   }
 
 
-  // cells[4].addEventListener('click', handlePlaySound)
 
 }
 
