@@ -2,19 +2,34 @@ function init() {
   console.log('Javascript is running')
 
   let timerId = null
-
   let playheadPosition = 0
   let isPlaying = false
+
+  //* 909 samples
+  const samples = [
+    '',
+    '../assets/sounds/909kit_BD2.mp3',
+    '../assets/sounds/909kit_ClapST.mp3',
+    '../assets/sounds/909kit_Crash.mp3',
+    '../assets/sounds/909kit_HH1.mp3',
+    '../assets/sounds/909kit_HHo2.mp3',
+    '../assets/sounds/909kit_Ride1.mp3',
+    '../assets/sounds/909kit_RideST.mp3',
+    '../assets/sounds/909kit_Rim1.mp3',
+    '../assets/sounds/909kit_SD1.mp3',
+    '../assets/sounds/909kit_Tom4.mp3',
+  ]
+
 
   //* Grid variables
   const grid = document.querySelector('.grid')
   const width = 16
-  const height = 10
+  const channels = 10
   const cells = []
 
   // * Creating the grid:
   function createGrid() {
-    for (let row = 1; row <= height; row++) {
+    for (let row = 1; row <= channels; row++) {
       for (let column = 1; column <= width; column++) {
         const cell = document.createElement('div')
         cell.classList = `Y${row} X${column}`
@@ -24,6 +39,32 @@ function init() {
     }
   }
   createGrid()
+
+  //*Creating the audio tags
+  const body = document.querySelector('body')
+  function createChannels() {
+    for (let row = 1; row <= channels; row++) {
+      const audioTag = document.createElement('audio')
+      audioTag.classList = `channel${row}`
+      body.appendChild(audioTag)
+    }
+  }
+  createChannels()
+
+  //* Selecting the audio tags
+  const audioTags = []
+  for (let i = 1; i <= channels; i++){
+    audioTags[i] = document.querySelector(`.channel${i}`)
+  }
+  console.log(audioTags)
+
+
+  function handlePlaySound(channel) {
+    const sound = samples[channel]
+    console.log(sound)
+    audioTags[channel].src = sound
+    audioTags[channel].play()
+  }
 
   //* Controls 
   const playButton = document.querySelector('.play-button')
@@ -35,7 +76,7 @@ function init() {
     if (isPlaying === false) {
       console.log('play!')
       playheadPosition = 1
-      updateCells(playheadPosition)
+      updateCells()
       startTimer()
       isPlaying = true
     } else {
@@ -49,11 +90,13 @@ function init() {
     clearInterval(timerId)
     playheadPosition = 0
     isPlaying = false
+    updateCells()
   }
 
   //* Clear grid
   function handleClearGrid() {
-    console.log('clear!')
+    console.log('clear')
+    handlePlaySound(5)
   }
 
 
@@ -73,25 +116,19 @@ function init() {
     } else {
       playheadPosition = playheadPosition + 1
     }
-    updateCells(playheadPosition)
+    updateCells()
     console.log(playheadPosition + ' playheadPosition')
   }
 
   //* Adds 'Active' class to the current column
-  function updateCells(playheadPosition) {
-
-
+  function updateCells() {
     for (let i = 0; i < cells.length; i++) {
       cells[i].classList.remove('active')
-
       if (cells[i].classList.contains(`X${playheadPosition}`)) {
         cells[i].classList.add('active')
       }
     }
   }
-
-
-
 
 
 
