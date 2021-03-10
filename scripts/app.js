@@ -3,7 +3,7 @@ function init() {
 
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
-    1, 
+    1,
     audioContext.sampleRate * 1,
     audioContext.sampleRate
   )
@@ -46,11 +46,13 @@ function init() {
     whiteNoiseSource.connect(snareFilter)
     whiteNoiseSource.start()
   })
-
   document.body.appendChild(snareButton)
 
-
-
+  const tempoKnob = document.createElement('input')
+  tempoKnob.setAttribute('type', 'range')
+  tempoKnob.setAttribute('min', '0')
+  tempoKnob.setAttribute('max', '200')
+  document.body.appendChild(tempoKnob)
 
 
   function playSynth(freq) {
@@ -63,28 +65,13 @@ function init() {
     synthOscillator.type = 'sawtooth'
     synthOscillator.connect(snareFilter)
     synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.6)
+    synthOscillator.stop(audioContext.currentTime + 0.2)
   }
-
 
   let timerId = null
   let playheadPosition = 0
   let isPlaying = false
-
-  // //* 909 samples
-  // const samples = [
-  //   '',
-  //   '../assets/sounds/909kit_BD2.mp3',
-  //   '../assets/sounds/909kit_ClapST.mp3',
-  //   '../assets/sounds/909kit_Crash.mp3',
-  //   '../assets/sounds/909kit_HH1.mp3',
-  //   '../assets/sounds/909kit_HHo2.mp3',
-  //   '../assets/sounds/909kit_Ride1.mp3',
-  //   '../assets/sounds/909kit_RideST.mp3',
-  //   '../assets/sounds/909kit_Rim1.mp3',
-  //   '../assets/sounds/909kit_SD1.mp3',
-  //   '../assets/sounds/909kit_Tom4.mp3'
-  // ]
+  let tempo = 120
 
   //* Notes
   const notes = [
@@ -122,32 +109,6 @@ function init() {
   }
   createGrid()
 
-  //*Creating the audio tags
-  const body = document.querySelector('body')
-  function createChannels() {
-    for (let row = 1; row <= channels; row++) {
-      const audioTag = document.createElement('audio')
-      audioTag.classList = `channel${row}`
-      body.appendChild(audioTag)
-    }
-  }
-  createChannels()
-
-  //* Selecting the audio tags
-  // const audioTags = []
-  // for (let i = 1; i <= channels; i++) {
-  //   audioTags[i] = document.querySelector(`.channel${i}`)
-  // }
-
-
-
-  // function handlePlaySound(channel) {
-  //   // console.log(event)
-  //   const sound = samples[channel]
-  //   // console.log(sound)
-  //   audioTags[channel].src = sound
-  //   audioTags[channel].play()
-  // }
 
   //* Controls 
   const playButton = document.querySelector('.play-button')
@@ -182,13 +143,12 @@ function init() {
     console.log('clear')
   }
 
-
   //* Timer
   function startTimer() {
     timerId = setInterval(() => {
       console.log(timerId)
       movePlayhead()
-    }, 150)
+    }, tempo)
   }
 
 
@@ -225,30 +185,37 @@ function init() {
     }
   }
 
-
   //* Triggers play sound function
-
   function triggersSample() {
     for (let i = 0; i < cells.length; i++) {
       if (cells[i].classList.contains(`X${playheadPosition}`)
         && (cells[i].classList.contains('on'))) {
         const noteToPlay = cells[i].classList[0].slice(1)
-        // console.log(noteToPlay.slice(1))
-        // handlePlaySound(noteToPlay)
         playSynth(notes[noteToPlay].frequency)
       }
     }
   }
 
 
+  function updateTempo(newTempo) {
+    console.log(newTempo)
+    tempo = newTempo
+  }
+
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
+  tempoKnob.addEventListener('input', function () {
+    tempo = this.value
+    updateTempo(tempo)
+  })
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
   }
+
+
 
 
 
