@@ -21,15 +21,15 @@ function init() {
   primaryGainControl.connect(audioContext.destination)
 
 
-  const button = document.createElement('button')
-  button.innerText = 'White Noise'
-  button.addEventListener('click', () => {
-    const whiteNoiseSource = audioContext.createBufferSource()
-    whiteNoiseSource.buffer = buffer
-    whiteNoiseSource.connect(primaryGainControl)
-    whiteNoiseSource.start()
-  })
-  document.body.appendChild(button)
+  // const button = document.createElement('button')
+  // button.innerText = 'White Noise'
+  // button.addEventListener('click', () => {
+  //   const whiteNoiseSource = audioContext.createBufferSource()
+  //   whiteNoiseSource.buffer = buffer
+  //   whiteNoiseSource.connect(primaryGainControl)
+  //   whiteNoiseSource.start()
+  // })
+  // document.body.appendChild(button)
 
 
   const snareFilter = audioContext.createBiquadFilter()
@@ -37,16 +37,6 @@ function init() {
   snareFilter.frequency.value = 500
   snareFilter.connect(primaryGainControl)
 
-
-  const snareButton = document.createElement('button')
-  snareButton.innerText = 'Snare'
-  snareButton.addEventListener('click', () => {
-    const whiteNoiseSource = audioContext.createBufferSource()
-    whiteNoiseSource.buffer = buffer
-    whiteNoiseSource.connect(snareFilter)
-    whiteNoiseSource.start()
-  })
-  document.body.appendChild(snareButton)
 
   const tempoKnob = document.createElement('input')
   tempoKnob.setAttribute('type', 'range')
@@ -68,10 +58,113 @@ function init() {
     synthOscillator.stop(audioContext.currentTime + 0.2)
   }
 
+  const lerp = (x, y, a) => x * (1 - a) + y * a
+  const invlerp = (a, b, v) => clamp((v - a) / (b - a))
+  const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v))
+
   let timerId = null
   let playheadPosition = 0
   let isPlaying = false
   let tempo = 120
+
+  var knobPosition = -50
+
+  let knobEngaged = false
+  let previousY = null
+  var min = 0
+  var max = 100
+  var step = 1
+
+  const setKnob = (knob, min, max, value) => {
+    const decimal = invlerp(min, max, value)
+    const squashed = lerp(0, 300, decimal)
+    knob.style.setProperty('--percentage', squashed)
+  }
+
+  function engageKnob(event) {
+    knobEngaged = true
+    previousY = event.clientY
+    event.preventDefault()
+    // console.log(engaged)
+  }
+
+  function disengageKnob() {
+    knobEngaged = false
+    // console.log(engaged)
+  }
+
+  // let inputValue = 0
+
+  const rotaryMove = Y => {
+
+    if (knobEngaged) {
+      if (previousY - Y === 0) {
+        return
+      }
+      const isGoingUp = previousY >= Y
+      previousY = Y
+      // console.log(isGoingUp + ' isGoingUp')
+
+      // let diff = min < 0 ? min / -50 : max / 50
+      // diff = diff < step ? step : diff
+      // inputValue = Number(inputValue) + diff * (isGoingUp ? 1 : -1)
+
+      // console.log(inputValue + ' input value')
+
+
+      isGoingUp ? knobPosition++ : knobPosition--
+      // console.log(Y)
+      if (knobPosition <= -50 || knobPosition >= 230) {
+        return
+      }
+      // console.log(inputValue + ' input value')
+
+      // percentage = (value - min) / (max - min)
+
+      console.log((knobPosition - 0) / (200 - 0) + ' knobPosition')
+
+      testKnob.style = `--percentage:${knobPosition}`
+    }
+  }
+
+  console.log(knobEngaged)
+  // console.log(previousY)
+  // console.log(inputValue)
+  // console.log(step, min , max)
+
+
+
+  const testKnob = document.createElement('button')
+  testKnob.classList = 'knob'
+  testKnob.innerText = 'test'
+  testKnob.style = `--percentage:${knobPosition}`
+  document.body.appendChild(testKnob)
+
+  testKnob.addEventListener('mousedown', engageKnob)
+  window.addEventListener('mouseup', disengageKnob)
+
+
+
+
+  window.addEventListener('mousemove', event => {
+    rotaryMove(event.clientY)
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //* Notes
   const notes = [
@@ -144,10 +237,18 @@ function init() {
   }
 
   //* Timer
+  // function startTimer() {
+  //   timerId = setInterval(() => {
+  //     console.log(timerId)
+  //     movePlayhead()
+  //   }, tempo)
+  // }
+
   function startTimer() {
-    timerId = setInterval(() => {
-      console.log(timerId)
+    timerId = setTimeout(() => {
+      // console.log(timerId)
       movePlayhead()
+      startTimer()
     }, tempo)
   }
 
@@ -206,10 +307,10 @@ function init() {
   playButton.addEventListener('click', handlePlay)
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
-  tempoKnob.addEventListener('input', function () {
-    tempo = this.value
-    updateTempo(tempo)
-  })
+  // tempoKnob.addEventListener('input', function () {
+  //   tempo = this.value
+  //   updateTempo(tempo)
+  // })
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
