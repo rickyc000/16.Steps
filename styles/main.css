@@ -9,7 +9,7 @@ html, body {
 
 .grid-wrapper {
   display: flex;
-  height: 80vh;
+  height: 60vh;
   justify-content: center;
   align-items: center;
 }

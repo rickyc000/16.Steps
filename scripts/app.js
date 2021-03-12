@@ -15,21 +15,9 @@ function init() {
     channelData[i] = Math.random() * 2 - 1
   }
 
-
   const primaryGainControl = audioContext.createGain()
   primaryGainControl.gain.setValueAtTime(0.05, 0)
   primaryGainControl.connect(audioContext.destination)
-
-
-  // const button = document.createElement('button')
-  // button.innerText = 'White Noise'
-  // button.addEventListener('click', () => {
-  //   const whiteNoiseSource = audioContext.createBufferSource()
-  //   whiteNoiseSource.buffer = buffer
-  //   whiteNoiseSource.connect(primaryGainControl)
-  //   whiteNoiseSource.start()
-  // })
-  // document.body.appendChild(button)
 
 
   const snareFilter = audioContext.createBiquadFilter()
@@ -38,11 +26,11 @@ function init() {
   snareFilter.connect(primaryGainControl)
 
 
-  const tempoKnob = document.createElement('input')
-  tempoKnob.setAttribute('type', 'range')
-  tempoKnob.setAttribute('min', '0')
-  tempoKnob.setAttribute('max', '200')
-  document.body.appendChild(tempoKnob)
+  // const tempoKnob = document.createElement('input')
+  // tempoKnob.setAttribute('type', 'range')
+  // tempoKnob.setAttribute('min', '0')
+  // tempoKnob.setAttribute('max', '200')
+  // document.body.appendChild(tempoKnob)
 
 
   function playSynth(freq) {
@@ -58,109 +46,84 @@ function init() {
     synthOscillator.stop(audioContext.currentTime + 0.2)
   }
 
-  const lerp = (x, y, a) => x * (1 - a) + y * a
-  const invlerp = (a, b, v) => clamp((v - a) / (b - a))
-  const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v))
-
   let timerId = null
   let playheadPosition = 0
   let isPlaying = false
-  let tempo = 120
-
-  var knobPosition = -50
-
-  let knobEngaged = false
-  let previousY = null
-  var min = 0
-  var max = 100
-  var step = 1
-
-  const setKnob = (knob, min, max, value) => {
-    const decimal = invlerp(min, max, value)
-    const squashed = lerp(0, 300, decimal)
-    knob.style.setProperty('--percentage', squashed)
-  }
-
-  function engageKnob(event) {
-    knobEngaged = true
-    previousY = event.clientY
-    event.preventDefault()
-    // console.log(engaged)
-  }
-
-  function disengageKnob() {
-    knobEngaged = false
-    // console.log(engaged)
-  }
-
-  // let inputValue = 0
-
-  const rotaryMove = Y => {
-
-    if (knobEngaged) {
-      if (previousY - Y === 0) {
-        return
-      }
-      const isGoingUp = previousY >= Y
-      previousY = Y
-      // console.log(isGoingUp + ' isGoingUp')
-
-      // let diff = min < 0 ? min / -50 : max / 50
-      // diff = diff < step ? step : diff
-      // inputValue = Number(inputValue) + diff * (isGoingUp ? 1 : -1)
-
-      // console.log(inputValue + ' input value')
+  let tempo = createKnob()
 
 
-      isGoingUp ? knobPosition++ : knobPosition--
-      // console.log(Y)
-      if (knobPosition <= -50 || knobPosition >= 230) {
-        return
-      }
-      // console.log(inputValue + ' input value')
 
-      // percentage = (value - min) / (max - min)
+  function createKnob() {
+    let knobPosition = 200
+    let knobEngaged = false
+    let previousY = null
+    let knobPercentage = ((knobPosition + 50) / 280) * 100
 
-      console.log((knobPosition - 0) / (200 - 0) + ' knobPosition')
+    const min = 80
+    const max = 200
+    const range = max - min
 
-      testKnob.style = `--percentage:${knobPosition}`
+    let BPM = (knobPercentage / 100 * range) + min
+
+    function engageKnob(event) {
+      knobEngaged = true
+      previousY = event.clientY
+      event.preventDefault()
     }
+
+    function disengageKnob() {
+      knobEngaged = false
+    }
+
+    function rotaryMove(Y) {
+      if (knobEngaged) {
+        if (previousY - Y === 0) {
+          return
+        }
+        const isGoingUp = previousY >= Y
+        previousY = Y
+
+        //* If the knob is at the top/bottom, do nothing:
+        if (knobPosition <= -50 && isGoingUp === false ||
+          knobPosition >= 230 && isGoingUp === true) {
+          return
+        }
+
+        //* Determines the rate of knob movement
+        isGoingUp ? knobPosition = knobPosition + 5 : knobPosition = knobPosition - 5
+
+        //* Sets the knob position
+        testKnob.style = `--percentage:${knobPosition}`
+
+        //* Turns the value into a percentage
+        knobPercentage = ((knobPosition + 50) / 280) * 100
+        console.log(knobPercentage + '%')
+
+        //* Turn this value into a range between 80 / 200
+        BPM = (knobPercentage / 100 * range) + min
+        // console.log(BPM)
+        updateTempo(BPM)
+      }
+      
+    }
+
+    const testKnob = document.createElement('button')
+    testKnob.classList = 'knob'
+    testKnob.innerText = 'Test'
+    testKnob.style = `--percentage:${knobPosition}`
+    document.body.appendChild(testKnob)
+
+    testKnob.addEventListener('mousedown', engageKnob)
+    window.addEventListener('mouseup', disengageKnob)
+
+    window.addEventListener('mousemove', event => {
+      rotaryMove(event.clientY)
+    })
+    return knobPercentage
+
   }
 
-  console.log(knobEngaged)
-  // console.log(previousY)
-  // console.log(inputValue)
-  // console.log(step, min , max)
-
-
-
-  const testKnob = document.createElement('button')
-  testKnob.classList = 'knob'
-  testKnob.innerText = 'test'
-  testKnob.style = `--percentage:${knobPosition}`
-  document.body.appendChild(testKnob)
-
-  testKnob.addEventListener('mousedown', engageKnob)
-  window.addEventListener('mouseup', disengageKnob)
-
-
-
-
-  window.addEventListener('mousemove', event => {
-    rotaryMove(event.clientY)
-  })
-
-
-
-
-
-
-
-
-
-
-
-
+  // console.log()
 
 
 
@@ -246,7 +209,6 @@ function init() {
 
   function startTimer() {
     timerId = setTimeout(() => {
-      // console.log(timerId)
       movePlayhead()
       startTimer()
     }, tempo)
@@ -262,7 +224,6 @@ function init() {
     }
     updateCells()
     triggersSample()
-    // console.log(playheadPosition + ' playheadPosition')
   }
 
   //* Adds 'Active' class to the current column
@@ -299,18 +260,16 @@ function init() {
 
 
   function updateTempo(newTempo) {
-    console.log(newTempo)
-    tempo = newTempo
+    console.log(newTempo + ' newTempo')
+    tempo = (60000 / newTempo) / 4
+    // console.log(tempo + ' tempo')
   }
 
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
-  // tempoKnob.addEventListener('input', function () {
-  //   tempo = this.value
-  //   updateTempo(tempo)
-  // })
+
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
