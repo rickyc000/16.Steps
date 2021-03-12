@@ -22,28 +22,22 @@ function init() {
 
   const snareFilter = audioContext.createBiquadFilter()
   snareFilter.type = 'highpass'
-  snareFilter.frequency.value = 500
+  snareFilter.frequency.value = 1000
   snareFilter.connect(primaryGainControl)
 
-
-  // const tempoKnob = document.createElement('input')
-  // tempoKnob.setAttribute('type', 'range')
-  // tempoKnob.setAttribute('min', '0')
-  // tempoKnob.setAttribute('max', '200')
-  // document.body.appendChild(tempoKnob)
 
 
   function playSynth(freq) {
     const synthOscillator = audioContext.createOscillator()
-    // kickOscillator.frequency.exponentialRampToValueAtTime(
-    //   0.001,
-    //   audioContext.currentTime + 0.4
+    // synthOscillator.frequency.exponentialRampToValueAtTime(
+    //   400,
+    //   audioContext.currentTime + 0.2
     // )
     synthOscillator.frequency.setValueAtTime(freq, 0)
-    synthOscillator.type = 'sawtooth'
+    synthOscillator.type = 'square'
     synthOscillator.connect(snareFilter)
     synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.2)
+    synthOscillator.stop(audioContext.currentTime + 0.1)
   }
 
   let timerId = null
@@ -93,7 +87,7 @@ function init() {
         isGoingUp ? knobPosition = knobPosition + 5 : knobPosition = knobPosition - 5
 
         //* Sets the knob position
-        testKnob.style = `--percentage:${knobPosition}`
+        tempoKnob.style = `--percentage:${knobPosition}`
 
         //* Turns the value into a percentage
         knobPercentage = ((knobPosition + 50) / 280) * 100
@@ -103,30 +97,23 @@ function init() {
         BPM = (knobPercentage / 100 * range) + min
         // console.log(BPM)
         updateTempo(BPM)
-      }
-      
+      }   
     }
 
-    const testKnob = document.createElement('button')
-    testKnob.classList = 'knob'
-    testKnob.innerText = 'Test'
-    testKnob.style = `--percentage:${knobPosition}`
-    document.body.appendChild(testKnob)
+    const tempoKnob = document.createElement('button')
+    tempoKnob.classList = 'knob'
+    tempoKnob.innerText = 'Tempo'
+    tempoKnob.style = `--percentage:${knobPosition}`
+    document.body.appendChild(tempoKnob)
 
-    testKnob.addEventListener('mousedown', engageKnob)
+    tempoKnob.addEventListener('mousedown', engageKnob)
     window.addEventListener('mouseup', disengageKnob)
 
     window.addEventListener('mousemove', event => {
       rotaryMove(event.clientY)
     })
     return knobPercentage
-
   }
-
-  // console.log()
-
-
-
 
 
   //* Notes
@@ -142,28 +129,31 @@ function init() {
     { name: 'G#', frequency: 415.3 },
     { name: 'A', frequency: 440.0 },
     { name: 'A#', frequency: 466.16 },
-    { name: 'B', frequency: 493.88 }
+    { name: 'B', frequency: 493.88 },
+    { name: 'C', frequency: 523.25 }
   ]
 
   //* Grid variables
   const grid = document.querySelector('.grid')
-  const width = 16
-  const channels = 10
+  const steps = 16
+  const channels = 4
   const cells = []
 
   // * Creating the grid:
-  function createGrid() {
+  function createGrid(instrumentName, channel) {
     for (let row = 1; row <= channels; row++) {
-      for (let column = 1; column <= width; column++) {
+      for (let column = 1; column <= steps; column++) {
         const cell = document.createElement('div')
-        cell.classList = `Y${row} X${column}`
-        cell.id = `${(row - 1) * 16 + column}`
+        cell.classList = `Y${row} X${column} ${instrumentName}`
+        cell.id = `${((row - 1) * steps + column) + ((channel - 1) * 16 * 4)}`
         grid.appendChild(cell)
         cells.push(cell)
       }
     }
   }
-  createGrid()
+  createGrid('lead', 1)
+  createGrid('bass', 2)
+  createGrid('drums', 3)
 
 
   //* Controls 
@@ -197,16 +187,12 @@ function init() {
   //* Clear grid
   function handleClearGrid() {
     console.log('clear')
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].classList.remove('on')
+    }  
   }
 
   //* Timer
-  // function startTimer() {
-  //   timerId = setInterval(() => {
-  //     console.log(timerId)
-  //     movePlayhead()
-  //   }, tempo)
-  // }
-
   function startTimer() {
     timerId = setTimeout(() => {
       movePlayhead()
@@ -240,6 +226,8 @@ function init() {
   //* Turn a STEP on or off
   function toggleStepOnOff(event) {
     const cellID = event.target.id - 1
+
+
     if (cells[cellID].classList.contains('on')) {
       cells[cellID].classList.remove('on')
     } else {
@@ -253,7 +241,22 @@ function init() {
       if (cells[i].classList.contains(`X${playheadPosition}`)
         && (cells[i].classList.contains('on'))) {
         const noteToPlay = cells[i].classList[0].slice(1)
-        playSynth(notes[noteToPlay].frequency)
+
+
+        if (cells[i].classList.contains('lead')) {
+          playSynth(notes[noteToPlay].frequency)
+        }
+
+        if (cells[i].classList.contains('bass')) {
+          playSynth(notes[noteToPlay].frequency)
+        }
+
+        if (cells[i].classList.contains('drums')) {
+          playSynth(notes[noteToPlay].frequency)
+        }
+
+        
+        console.log(notes[noteToPlay].frequency)
       }
     }
   }
@@ -270,14 +273,18 @@ function init() {
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
 
-
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
   }
 
 
-
-
+  function presetPattern() {
+    cells[0].classList.add('on')
+    cells[4].classList.add('on')
+    cells[8].classList.add('on')
+    cells[12].classList.add('on')
+  }
+  presetPattern()
 
 }
 

@@ -17,9 +17,17 @@ html, body {
 .knob {
   background-color: lightpink;
   border-radius: 100%;
-  height: 50px;
-  width: 50px;
+  border: none;
+  height: 80px;
+  width: 80px;
   transform: rotate(calc(var(--percentage, 0) * 1deg));
+}
+
+button {
+  border: none;
+  background-color: lightcyan;
+  height: 50px;
+  width: 110px;
 }
 
 .grid {
@@ -28,9 +36,6 @@ html, body {
   justify-content: center;
   height: 300px;
   width: 500px;
-  /* border: 1px solid white; */
-  /* padding: 10px; */
-  /* border: 1px solid rgb(232, 161, 70); */
 }
 
 
