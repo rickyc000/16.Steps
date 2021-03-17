@@ -15,9 +15,17 @@ function init() {
     channelData[i] = Math.random() * 2 - 1
   }
 
+  const now = audioContext.currentTime
+  console.log(now)
+
+
   const primaryGainControl = audioContext.createGain()
   primaryGainControl.gain.setValueAtTime(0.05, 0)
   primaryGainControl.connect(audioContext.destination)
+
+  const kickGainControl = audioContext.createGain()
+  kickGainControl.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.2)
+  kickGainControl.connect(audioContext.destination)
 
 
   const snareFilter = audioContext.createBiquadFilter()
@@ -25,46 +33,100 @@ function init() {
   snareFilter.frequency.value = 1000
   snareFilter.connect(primaryGainControl)
 
+  const kickFilter = audioContext.createBiquadFilter()
+  kickFilter.type = 'highpass'
+  kickFilter.frequency.value = 200
+  kickFilter.connect(primaryGainControl)
 
 
-  function playSynth(freq) {
+
+  // function playLead(freq) {
+  //   const synthOscillator = audioContext.createOscillator()
+  //   // synthOscillator.frequency.exponentialRampToValueAtTime(
+  //   //   400,
+  //   //   audioContext.currentTime + 0.2
+  //   // )
+  //   synthOscillator.frequency.setValueAtTime(freq, 0)
+  //   synthOscillator.type = 'square'
+  //   synthOscillator.connect(snareFilter)
+  //   synthOscillator.start()
+  //   synthOscillator.stop(audioContext.currentTime + 0.1)
+  // }
+
+  // function playBass(freq) {
+  //   const synthOscillator = audioContext.createOscillator()
+  //   // synthOscillator.frequency.exponentialRampToValueAtTime(
+  //   //   400,
+  //   //   audioContext.currentTime + 0.2
+  //   // )
+  //   synthOscillator.frequency.setValueAtTime(freq, 0)
+  //   synthOscillator.type = 'sine'
+  //   synthOscillator.connect(snareFilter)
+  //   synthOscillator.start()
+  //   synthOscillator.stop(audioContext.currentTime + 0.1)
+  // }
+
+  function playDrums() {
     const synthOscillator = audioContext.createOscillator()
-    // synthOscillator.frequency.exponentialRampToValueAtTime(
-    //   400,
-    //   audioContext.currentTime + 0.2
-    // )
-    synthOscillator.frequency.setValueAtTime(freq, 0)
-    synthOscillator.type = 'square'
-    synthOscillator.connect(snareFilter)
+    synthOscillator.frequency.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + 0.2
+    )
+    // synthOscillator.frequency.setValueAtTime(150, audioContext.currentTime)
+    // synthOscillator.frequency.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.001)
+    synthOscillator.type = 'sine'
+    synthOscillator.connect(kickGainControl)
     synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.1)
+    synthOscillator.stop(audioContext.currentTime + 0.05)
   }
 
-  let timerId = null
+  let timerId = null 
   let playheadPosition = 0
   let isPlaying = false
-  let tempo = createKnob()
 
 
 
-  function createKnob() {
-    let knobPosition = 200
+  let BPM = createKnob(80, 200, 120, 'Tempo')
+
+  //* Timer
+  function startTimer() {
+    timerId = setTimeout(() => {
+      movePlayhead()
+      startTimer()
+    }, (60000 / BPM) / 4)
+  }
+
+  // //* Update knob value
+  function updateTempo(newBPM) {
+    console.log(newBPM + ' newBPM')
+    BPM = newBPM
+  }
+
+  //* CREATE KNOB FUNCTION
+
+  function createKnob(min, max, defaultValue, knobName) {
+    const knob = document.createElement('button')
+    knob.classList = 'knob'
+    knob.innerText = `${knobName}`
+    let knobPosition = defaultValue
+    knob.style = `--percentage:${knobPosition}`
+    document.body.appendChild(knob)
+
+    
     let knobEngaged = false
     let previousY = null
     let knobPercentage = ((knobPosition + 50) / 280) * 100
 
-    const min = 80
-    const max = 200
     const range = max - min
 
-    let BPM = (knobPercentage / 100 * range) + min
+    let value = (knobPercentage / 100 * range) + min
 
+    //* Engages when clicked
     function engageKnob(event) {
       knobEngaged = true
       previousY = event.clientY
       event.preventDefault()
     }
-
     function disengageKnob() {
       knobEngaged = false
     }
@@ -87,33 +149,32 @@ function init() {
         isGoingUp ? knobPosition = knobPosition + 5 : knobPosition = knobPosition - 5
 
         //* Sets the knob position
-        tempoKnob.style = `--percentage:${knobPosition}`
+        knob.style = `--percentage:${knobPosition}`
 
         //* Turns the value into a percentage
         knobPercentage = ((knobPosition + 50) / 280) * 100
         console.log(knobPercentage + '%')
 
         //* Turn this value into a range between 80 / 200
-        BPM = (knobPercentage / 100 * range) + min
-        // console.log(BPM)
-        updateTempo(BPM)
-      }   
+        value = (knobPercentage / 100 * range) + min
+        updateTempo(value)
+      }
     }
 
-    const tempoKnob = document.createElement('button')
-    tempoKnob.classList = 'knob'
-    tempoKnob.innerText = 'Tempo'
-    tempoKnob.style = `--percentage:${knobPosition}`
-    document.body.appendChild(tempoKnob)
-
-    tempoKnob.addEventListener('mousedown', engageKnob)
+    knob.addEventListener('mousedown', engageKnob)
     window.addEventListener('mouseup', disengageKnob)
 
     window.addEventListener('mousemove', event => {
       rotaryMove(event.clientY)
     })
-    return knobPercentage
+    return value
   }
+
+  //* END OF CREATE KNOB FUNCTION
+
+
+
+
 
 
   //* Notes
@@ -189,16 +250,10 @@ function init() {
     console.log('clear')
     for (let i = 0; i < cells.length; i++) {
       cells[i].classList.remove('on')
-    }  
+    }
   }
 
-  //* Timer
-  function startTimer() {
-    timerId = setTimeout(() => {
-      movePlayhead()
-      startTimer()
-    }, tempo)
-  }
+
 
 
   //* Move playhead
@@ -226,8 +281,6 @@ function init() {
   //* Turn a STEP on or off
   function toggleStepOnOff(event) {
     const cellID = event.target.id - 1
-
-
     if (cells[cellID].classList.contains('on')) {
       cells[cellID].classList.remove('on')
     } else {
@@ -243,30 +296,29 @@ function init() {
         const noteToPlay = cells[i].classList[0].slice(1)
 
 
-        if (cells[i].classList.contains('lead')) {
-          playSynth(notes[noteToPlay].frequency)
-        }
+        // if (cells[i].classList.contains('lead')) {
+        //   playLead(notes[noteToPlay].frequency)
+        // }
 
-        if (cells[i].classList.contains('bass')) {
-          playSynth(notes[noteToPlay].frequency)
-        }
+        // if (cells[i].classList.contains('bass')) {
+        //   playBass(notes[noteToPlay].frequency)
+        //   console.log('play bass')
+        // }
 
         if (cells[i].classList.contains('drums')) {
-          playSynth(notes[noteToPlay].frequency)
+          playDrums(notes[noteToPlay].frequency)
+          // console.log('play drums')
         }
 
-        
-        console.log(notes[noteToPlay].frequency)
+
+
+        // console.log(notes[noteToPlay].frequency)
       }
     }
   }
 
 
-  function updateTempo(newTempo) {
-    console.log(newTempo + ' newTempo')
-    tempo = (60000 / newTempo) / 4
-    // console.log(tempo + ' tempo')
-  }
+
 
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
@@ -279,10 +331,10 @@ function init() {
 
 
   function presetPattern() {
-    cells[0].classList.add('on')
-    cells[4].classList.add('on')
-    cells[8].classList.add('on')
-    cells[12].classList.add('on')
+    cells[176].classList.add('on')
+    cells[180].classList.add('on')
+    cells[184].classList.add('on')
+    cells[188].classList.add('on')
   }
   presetPattern()
 
