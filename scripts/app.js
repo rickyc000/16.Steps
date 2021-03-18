@@ -52,18 +52,22 @@ function init() {
   clapFilter.connect(primaryGainControl)
 
   const leadGainControl = audioContext.createGain()
-  leadGainControl.gain.setValueAtTime(0.002, audioContext.currentTime)
-  leadGainControl.connect(audioContext.destination)
+  leadGainControl.gain.value = 0.5
+  leadGainControl.connect(primaryGainControl)
 
   const lead2GainControl = audioContext.createGain()
-  // leadGainControl.gain.setValueAtTime(0.9, audioContext.currentTime)
-  leadGainControl.gain.setValueAtTime(0.6, audioContext.currentTime + 0.19)
-  // lead2GainControl.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.2)
-  lead2GainControl.connect(audioContext.destination)
-  
+  lead2GainControl.gain.setValueAtTime(0.6, audioContext.currentTime)
+  lead2GainControl.connect(primaryGainControl)
+
+  const bassGainControl = audioContext.createGain()
+  bassGainControl.gain.setValueAtTime(0.9, audioContext.currentTime)
+  bassGainControl.connect(primaryGainControl)
 
 
 
+
+
+  //* SYNTH 1
   function playLead(freq) {
     const synthOscillator = audioContext.createOscillator()
     const synthOscillator2 = audioContext.createOscillator()
@@ -71,55 +75,51 @@ function init() {
     const leadFilter = audioContext.createBiquadFilter()
     leadFilter.type = 'lowpass'
     leadFilter.frequency.value = 10
-    // console.log(leadFilter.frequency)
     leadFilter.Q.value = 20
-    leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.04)
-    leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.05)
+    leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
+    // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
     leadFilter.connect(leadGainControl)
 
     synthOscillator.frequency.setValueAtTime(freq, 0)
     synthOscillator.type = 'sawtooth'
     synthOscillator.connect(leadFilter)
     synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.15)
-
-
+    synthOscillator.stop(audioContext.currentTime + 0.1)
 
     const leadFilter2 = audioContext.createBiquadFilter()
     leadFilter2.type = 'bandpass'
     leadFilter2.frequency.value = 100
-    // console.log(leadFilter.frequency)
     leadFilter2.Q.value = 1
-    leadFilter2.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.3)
-    leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.12)
+    leadFilter2.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.05)
+    // leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.025)
     leadFilter2.connect(lead2GainControl)
 
     synthOscillator2.frequency.setValueAtTime(freq, 0)
-    synthOscillator2.type = 'square'
+    synthOscillator2.type = 'sine'
     synthOscillator2.connect(leadFilter2)
-    synthOscillator2.start(audioContext.currentTime + 0.1)
-    synthOscillator2.stop(audioContext.currentTime + 0.35)
-
-
-
-
-
-
-
+    synthOscillator2.start(audioContext.currentTime + 0.05)
+    synthOscillator2.stop(audioContext.currentTime + 0.125)
   }
 
-  // function playBass(freq) {
-  //   const synthOscillator = audioContext.createOscillator()
-  //   // synthOscillator.frequency.exponentialRampToValueAtTime(
-  //   //   400,
-  //   //   audioContext.currentTime + 0.2
-  //   // )
-  //   synthOscillator.frequency.setValueAtTime(freq, 0)
-  //   synthOscillator.type = 'sine'
-  //   synthOscillator.connect(snareFilter)
-  //   synthOscillator.start()
-  //   synthOscillator.stop(audioContext.currentTime + 0.1)
-  // }
+  function playBass(freq) {
+    const synthOscillator = audioContext.createOscillator()
+
+    // const distortion = audioContext.createWaveShaper()
+
+    const bassFilter = audioContext.createBiquadFilter()
+    bassFilter.type = 'lowpass'
+    bassFilter.frequency.value = 1000
+    bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
+    bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
+    bassFilter.connect(bassGainControl)
+
+
+    synthOscillator.frequency.setValueAtTime(freq, 0)
+    synthOscillator.type = 'sawtooth'
+    synthOscillator.connect(bassFilter)
+    synthOscillator.start()
+    synthOscillator.stop(audioContext.currentTime + 0.2)
+  }
 
   function playDrums(note) {
 
@@ -308,13 +308,29 @@ function init() {
     { name: 'C', frequency: 523.25 }
   ]
 
+  const bassNotes = [
+    { name: 'C', frequency: 130.81 },
+
+    { name: 'D', frequency: 146.83 },
+
+    { name: 'E', frequency: 164.81 },
+    { name: 'F', frequency: 174.61 }
+
+    // { name: 'G', frequency: 392.0 },
+    // { name: 'G#', frequency: 415.3 },
+    // { name: 'A', frequency: 440.0 },
+    // { name: 'A#', frequency: 466.16 },
+    // { name: 'B', frequency: 493.88 },
+    // { name: 'C', frequency: 523.25 }
+  ]
+
   const selectNotes = [
     { name: 'C', frequency: 261.63 },
 
     { name: 'D', frequency: 293.66 },
 
     { name: 'E', frequency: 329.63 },
-    { name: 'F', frequency: 349.23 },
+    { name: 'F', frequency: 349.23 }
 
     // { name: 'G', frequency: 392.0 },
     // { name: 'G#', frequency: 415.3 },
@@ -436,10 +452,10 @@ function init() {
           playLead(selectNotes[noteToPlay].frequency)
         }
 
-        // if (cells[i].classList.contains('bass')) {
-        //   playBass(notes[noteToPlay].frequency)
-        //   console.log('play bass')
-        // }
+        if (cells[i].classList.contains('bass')) {
+          playBass(bassNotes[noteToPlay].frequency)
+          console.log('play bass')
+        }
 
 
         if (cells[i].classList.contains('drums')) {
@@ -470,7 +486,7 @@ function init() {
     // cells[184].classList.add('on')
     // cells[188].classList.add('on')
 
-    // cells[1].classList.add('on')
+    cells[1].classList.add('on')
     cells[16].classList.add('on')
     cells[24].classList.add('on')
     cells[58].classList.add('on')
@@ -479,6 +495,15 @@ function init() {
     cells[29].classList.add('on')
     // cells[17].classList.add('on')
     cells[20].classList.add('on')
+
+    cells[65].classList.add('on')
+    cells[75].classList.add('on')
+    cells[90].classList.add('on')
+
+    cells[100].classList.add('on')
+    cells[112].classList.add('on')
+    // cells[17].classList.add('on')
+    cells[118].classList.add('on')
   }
   presetPattern()
 
