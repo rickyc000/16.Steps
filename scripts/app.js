@@ -48,28 +48,54 @@ function init() {
 
   const clapFilter = audioContext.createBiquadFilter()
   clapFilter.type = 'lowpass'
-  // clapFilter.frequency.value = 2000
-  // clapFilter.frequency.setValueAtTime(0.5, 0)
   clapFilter.frequency.setValueAtTime(2000, audioContext.currentTime)
-  
-  
   clapFilter.connect(primaryGainControl)
 
+  // const leadFilter = audioContext.createBiquadFilter()
+  // leadFilter.type = 'lowpass'
+  // leadFilter.frequency.value = 100
+  // console.log(leadFilter.frequency)
+  // // leadFilter.Q.setValueAtTime(4, audioContext.currentTime)
+  // leadFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 10)
+  // // enveloper()
+  // // leadFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.1)
+  // leadFilter.connect(primaryGainControl)
 
+  // // function enveloper() {
+  // //   leadFilter.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1)
+  // // }
 
 
 
   function playLead(freq) {
     const synthOscillator = audioContext.createOscillator()
+
+    const leadFilter = audioContext.createBiquadFilter()
+    leadFilter.type = 'lowpass'
+    leadFilter.frequency.value = 10
+    console.log(leadFilter.frequency)
+    // leadFilter.Q.setValueAtTime(4, audioContext.currentTime)
+    leadFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.1)
+    // enveloper()
+    // leadFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.1)
+    leadFilter.connect(primaryGainControl)
     // synthOscillator.frequency.exponentialRampToValueAtTime(
-    //   400,
+    //   0.001,
     //   audioContext.currentTime + 0.2
     // )
     synthOscillator.frequency.setValueAtTime(freq, 0)
     synthOscillator.type = 'square'
-    synthOscillator.connect(snareFilter)
+    synthOscillator.connect(leadFilter)
     synthOscillator.start()
     synthOscillator.stop(audioContext.currentTime + 0.1)
+
+
+
+
+
+
+
+
   }
 
   // function playBass(freq) {
@@ -125,7 +151,6 @@ function init() {
       whiteNoiseSource.stop(audioContext.currentTime + 0.1)
     }
 
-
     if (note === 'hihat') {
       const whiteNoiseSource = audioContext.createBufferSource()
       whiteNoiseSource.buffer = buffer
@@ -151,8 +176,8 @@ function init() {
 
       whiteNoiseSource.connect(clapFilter)
 
-      whiteNoiseSource.start() 
-      whiteNoiseSource.stop(audioContext.currentTime + 0.1) 
+      whiteNoiseSource.start()
+      whiteNoiseSource.stop(audioContext.currentTime + 0.1)
     }
   }
 
@@ -165,7 +190,7 @@ function init() {
 
 
 
-  let BPM = createKnob(80, 200, 120, 'Tempo')
+  let BPM = createKnob(80, 200, 80, 'Tempo')
 
   //* Timer
   function startTimer() {
@@ -414,10 +439,20 @@ function init() {
 
 
   function presetPattern() {
-    cells[176].classList.add('on')
-    cells[180].classList.add('on')
-    cells[184].classList.add('on')
-    cells[188].classList.add('on')
+    // cells[176].classList.add('on')
+    // cells[180].classList.add('on')
+    // cells[184].classList.add('on')
+    // cells[188].classList.add('on')
+
+    // cells[1].classList.add('on')
+    cells[16].classList.add('on')
+    cells[24].classList.add('on')
+    cells[58].classList.add('on')
+
+    cells[30].classList.add('on')
+    cells[29].classList.add('on')
+    // cells[17].classList.add('on')
+    cells[20].classList.add('on')
   }
   presetPattern()
 

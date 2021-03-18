@@ -40,8 +40,8 @@ button {
 
 
 .grid div {
-  /* border: 1px solid rgb(87, 189, 174); */
-  border: 2px solid palegoldenrod;
+  border: 1px solid rgb(87, 189, 174);
+  border: 1px solid white;
   /* background-color: rgb(207, 207, 207); */
   height: 10%;
   width: 6.25%;
