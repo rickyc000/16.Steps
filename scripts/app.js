@@ -29,7 +29,7 @@ function init() {
 
   const kickFilter = audioContext.createBiquadFilter()
   kickFilter.type = 'lowpass'
-  kickFilter.frequency.value = 400
+  kickFilter.frequency.value = 500
   kickFilter.connect(kickGainControl)
 
   const snareGainControl = audioContext.createGain()
@@ -51,44 +51,54 @@ function init() {
   clapFilter.frequency.setValueAtTime(2000, audioContext.currentTime)
   clapFilter.connect(primaryGainControl)
 
-  // const leadFilter = audioContext.createBiquadFilter()
-  // leadFilter.type = 'lowpass'
-  // leadFilter.frequency.value = 100
-  // console.log(leadFilter.frequency)
-  // // leadFilter.Q.setValueAtTime(4, audioContext.currentTime)
-  // leadFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 10)
-  // // enveloper()
-  // // leadFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.1)
-  // leadFilter.connect(primaryGainControl)
+  const leadGainControl = audioContext.createGain()
+  leadGainControl.gain.setValueAtTime(0.002, audioContext.currentTime)
+  leadGainControl.connect(audioContext.destination)
 
-  // // function enveloper() {
-  // //   leadFilter.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1)
-  // // }
+  const lead2GainControl = audioContext.createGain()
+  // leadGainControl.gain.setValueAtTime(0.9, audioContext.currentTime)
+  leadGainControl.gain.setValueAtTime(0.6, audioContext.currentTime + 0.19)
+  // lead2GainControl.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.2)
+  lead2GainControl.connect(audioContext.destination)
+  
 
 
 
   function playLead(freq) {
     const synthOscillator = audioContext.createOscillator()
+    const synthOscillator2 = audioContext.createOscillator()
 
     const leadFilter = audioContext.createBiquadFilter()
     leadFilter.type = 'lowpass'
     leadFilter.frequency.value = 10
-    console.log(leadFilter.frequency)
-    // leadFilter.Q.setValueAtTime(4, audioContext.currentTime)
-    leadFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.1)
-    // enveloper()
-    // leadFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.1)
-    leadFilter.connect(primaryGainControl)
-    // synthOscillator.frequency.exponentialRampToValueAtTime(
-    //   0.001,
-    //   audioContext.currentTime + 0.2
-    // )
+    // console.log(leadFilter.frequency)
+    leadFilter.Q.value = 20
+    leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.04)
+    leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.05)
+    leadFilter.connect(leadGainControl)
+
     synthOscillator.frequency.setValueAtTime(freq, 0)
-    synthOscillator.type = 'square'
+    synthOscillator.type = 'sawtooth'
     synthOscillator.connect(leadFilter)
     synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.1)
+    synthOscillator.stop(audioContext.currentTime + 0.15)
 
+
+
+    const leadFilter2 = audioContext.createBiquadFilter()
+    leadFilter2.type = 'bandpass'
+    leadFilter2.frequency.value = 100
+    // console.log(leadFilter.frequency)
+    leadFilter2.Q.value = 1
+    leadFilter2.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.3)
+    leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.12)
+    leadFilter2.connect(lead2GainControl)
+
+    synthOscillator2.frequency.setValueAtTime(freq, 0)
+    synthOscillator2.type = 'square'
+    synthOscillator2.connect(leadFilter2)
+    synthOscillator2.start(audioContext.currentTime + 0.1)
+    synthOscillator2.stop(audioContext.currentTime + 0.35)
 
 
 
@@ -298,6 +308,22 @@ function init() {
     { name: 'C', frequency: 523.25 }
   ]
 
+  const selectNotes = [
+    { name: 'C', frequency: 261.63 },
+
+    { name: 'D', frequency: 293.66 },
+
+    { name: 'E', frequency: 329.63 },
+    { name: 'F', frequency: 349.23 },
+
+    // { name: 'G', frequency: 392.0 },
+    // { name: 'G#', frequency: 415.3 },
+    // { name: 'A', frequency: 440.0 },
+    // { name: 'A#', frequency: 466.16 },
+    // { name: 'B', frequency: 493.88 },
+    // { name: 'C', frequency: 523.25 }
+  ]
+
   //* Drums
   const drums = [
     { name: 'hihat' },
@@ -407,7 +433,7 @@ function init() {
 
 
         if (cells[i].classList.contains('lead')) {
-          playLead(notes[noteToPlay].frequency)
+          playLead(selectNotes[noteToPlay].frequency)
         }
 
         // if (cells[i].classList.contains('bass')) {
