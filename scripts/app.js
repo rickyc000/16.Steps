@@ -52,15 +52,15 @@ function init() {
   clapFilter.connect(primaryGainControl)
 
   const leadGainControl = audioContext.createGain()
-  leadGainControl.gain.value = 0.5
+  leadGainControl.gain.value = 0.3
   leadGainControl.connect(primaryGainControl)
 
   const lead2GainControl = audioContext.createGain()
-  lead2GainControl.gain.setValueAtTime(0.6, audioContext.currentTime)
+  lead2GainControl.gain.setValueAtTime(0.3, audioContext.currentTime)
   lead2GainControl.connect(primaryGainControl)
 
   const bassGainControl = audioContext.createGain()
-  bassGainControl.gain.setValueAtTime(0.9, audioContext.currentTime)
+  bassGainControl.gain.setValueAtTime(0.7, audioContext.currentTime)
   bassGainControl.connect(primaryGainControl)
 
 
@@ -72,6 +72,7 @@ function init() {
     const synthOscillator = audioContext.createOscillator()
     const synthOscillator2 = audioContext.createOscillator()
 
+    //* OSC 1
     const leadFilter = audioContext.createBiquadFilter()
     leadFilter.type = 'lowpass'
     leadFilter.frequency.value = 10
@@ -86,18 +87,20 @@ function init() {
     synthOscillator.start()
     synthOscillator.stop(audioContext.currentTime + 0.1)
 
+
+    //* OSC 2
     const leadFilter2 = audioContext.createBiquadFilter()
     leadFilter2.type = 'bandpass'
     leadFilter2.frequency.value = 100
     leadFilter2.Q.value = 1
-    leadFilter2.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.05)
+    leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
     // leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.025)
     leadFilter2.connect(lead2GainControl)
 
     synthOscillator2.frequency.setValueAtTime(freq, 0)
-    synthOscillator2.type = 'sine'
+    synthOscillator2.type = 'square'
     synthOscillator2.connect(leadFilter2)
-    synthOscillator2.start(audioContext.currentTime + 0.05)
+    synthOscillator2.start(audioContext.currentTime + 0.03)
     synthOscillator2.stop(audioContext.currentTime + 0.125)
   }
 
@@ -292,53 +295,107 @@ function init() {
 
 
   //* Notes
-  const notes = [
-    { name: 'C', frequency: 261.63 },
-    { name: 'C#', frequency: 277.18 },
-    { name: 'D', frequency: 293.66 },
-    { name: 'D#', frequency: 311.13 },
-    { name: 'E', frequency: 329.63 },
-    { name: 'F', frequency: 349.23 },
-    { name: 'F#', frequency: 369.99 },
-    { name: 'G', frequency: 392.0 },
-    { name: 'G#', frequency: 415.3 },
-    { name: 'A', frequency: 440.0 },
-    { name: 'A#', frequency: 466.16 },
-    { name: 'B', frequency: 493.88 },
-    { name: 'C', frequency: 523.25 }
-  ]
-
   const bassNotes = [
-    { name: 'C', frequency: 130.81 },
-
-    { name: 'D', frequency: 146.83 },
-
-    { name: 'E', frequency: 164.81 },
-    { name: 'F', frequency: 174.61 }
-
-    // { name: 'G', frequency: 392.0 },
-    // { name: 'G#', frequency: 415.3 },
-    // { name: 'A', frequency: 440.0 },
-    // { name: 'A#', frequency: 466.16 },
-    // { name: 'B', frequency: 493.88 },
-    // { name: 'C', frequency: 523.25 }
+    //* Bass octave
+    { name: 'C3', frequency: 130.81 },
+    { name: 'C#3', frequency: 277.18 },
+    { name: 'D3', frequency: 293.66 },
+    { name: 'D#3', frequency: 311.13 },
+    { name: 'E3', frequency: 329.63 },
+    { name: 'F3', frequency: 349.23 },
+    { name: 'F#3', frequency: 369.99 },
+    { name: 'G3', frequency: 392.0 },
+    { name: 'G#3', frequency: 415.3 },
+    { name: 'A3', frequency: 440.0 },
+    { name: 'A#3', frequency: 466.16 },
+    { name: 'B3', frequency: 493.88 }
   ]
 
-  const selectNotes = [
-    { name: 'C', frequency: 261.63 },
-
-    { name: 'D', frequency: 293.66 },
-
-    { name: 'E', frequency: 329.63 },
-    { name: 'F', frequency: 349.23 }
-
-    // { name: 'G', frequency: 392.0 },
-    // { name: 'G#', frequency: 415.3 },
-    // { name: 'A', frequency: 440.0 },
-    // { name: 'A#', frequency: 466.16 },
-    // { name: 'B', frequency: 493.88 },
-    // { name: 'C', frequency: 523.25 }
+  const leadNotes = [
+    //* Lead octave
+    { name: 'C4', frequency: 261.63 },
+    { name: 'C#4', frequency: 277.18 },
+    { name: 'D4', frequency: 293.66 },
+    { name: 'D#4', frequency: 311.13 },
+    { name: 'E4', frequency: 329.63 },
+    { name: 'F4', frequency: 349.23 },
+    { name: 'F#4', frequency: 369.99 },
+    { name: 'G4', frequency: 392.0 },
+    { name: 'G#4', frequency: 415.3 },
+    { name: 'A4', frequency: 440.0 },
+    { name: 'A#4', frequency: 466.16 },
+    { name: 'B4', frequency: 493.88 }
   ]
+
+
+  let activeLeadChord = {
+    note1: null,
+    note2: null,
+    note3: null,
+    note4: null,
+  }
+
+  let activeBassChord = {
+    note1: null,
+    note2: null,
+    note3: null,
+    note4: null,
+  }
+
+
+  function setChord(chord, notes) {
+
+    const note1 = notes.filter(note => {
+      return note.name === chord[0]
+    })
+    const note2 = notes.filter(note => {
+      return note.name === chord[1]
+    })
+    const note3 = notes.filter(note => {
+      return note.name === chord[2]
+    })
+    const note4 = notes.filter(note => {
+      return note.name === chord[3]
+    })
+
+    // console.log(notes)
+    return [ note1[0], note2[0], note3[0], note4[0] ]
+  }
+
+
+  const bassChords = [
+    ['C3', 'D3', 'F3', 'A3'],
+    ['D3', 'B3', 'F#3', 'G3'],
+    ['B3', 'A3', 'F#3', 'C#3']
+  ]
+
+  const leadChords = [
+    ['C4', 'D4', 'F4', 'A4'],
+    ['D4', 'B4', 'F#4', 'G4'],
+    ['B4', 'A4', 'F#4', 'C#4']
+  ]
+
+
+
+  function setActiveChords() {
+    const chordNumber = Math.floor(Math.random() * bassChords.length)
+
+    activeBassChord = setChord(bassChords[chordNumber], bassNotes)
+    activeLeadChord = setChord(leadChords[chordNumber], leadNotes)
+
+  }
+
+  setActiveChords()
+
+  function handleChangeNotes() {
+    console.log('change')
+    setActiveChords()
+  }
+
+  // setChord(chords[Math.floor(Math.random() * chords.length)], leadNotes)
+
+  console.log(activeLeadChord, activeBassChord)
+
 
   //* Drums
   const drums = [
@@ -375,6 +432,7 @@ function init() {
   const playButton = document.querySelector('.play-button')
   const stopButton = document.querySelector('.stop-button')
   const clearGridButton = document.querySelector('.clear-grid-button')
+  const changeNotesButton = document.querySelector('.change-notes-button')
 
   //* Play sequence
   function handlePlay() {
@@ -449,12 +507,13 @@ function init() {
 
 
         if (cells[i].classList.contains('lead')) {
-          playLead(selectNotes[noteToPlay].frequency)
+          playLead(activeLeadChord[noteToPlay].frequency)
+          console.log(activeLeadChord[noteToPlay].name)
         }
 
         if (cells[i].classList.contains('bass')) {
-          playBass(bassNotes[noteToPlay].frequency)
-          console.log('play bass')
+          playBass(activeBassChord[noteToPlay].frequency)
+          console.log(activeBassChord[noteToPlay].name)
         }
 
 
@@ -474,6 +533,7 @@ function init() {
   playButton.addEventListener('click', handlePlay)
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
+  changeNotesButton.addEventListener('click', handleChangeNotes)
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
