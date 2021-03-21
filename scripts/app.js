@@ -358,8 +358,7 @@ function init() {
       return note.name === chord[3]
     })
 
-    // console.log(notes)
-    return [ note1[0], note2[0], note3[0], note4[0] ]
+    return [note1[0], note2[0], note3[0], note4[0]]
   }
 
 
@@ -375,18 +374,14 @@ function init() {
     ['B4', 'A4', 'F#4', 'C#4']
   ]
 
-
-
   function setActiveChords() {
     const chordNumber = Math.floor(Math.random() * bassChords.length)
-
     activeBassChord = setChord(bassChords[chordNumber], bassNotes)
     activeLeadChord = setChord(leadChords[chordNumber], leadNotes)
-
   }
-
   setActiveChords()
 
+  //* On click, randomly update active chord
   function handleChangeNotes() {
     console.log('change')
     setActiveChords()
@@ -433,6 +428,9 @@ function init() {
   const stopButton = document.querySelector('.stop-button')
   const clearGridButton = document.querySelector('.clear-grid-button')
   const changeNotesButton = document.querySelector('.change-notes-button')
+  const fourToTheFloorButton = document.querySelector('.four-to-the-floor-button')
+  const newDrumPattern = document.querySelector('.new-drum-pattern')
+
 
   //* Play sequence
   function handlePlay() {
@@ -459,11 +457,33 @@ function init() {
 
   //* Clear grid
   function handleClearGrid() {
-    console.log('clear')
+    clearCells('all')
+  }
+
+  //* Clear cells
+  function clearCells(section) {
     for (let i = 0; i < cells.length; i++) {
-      cells[i].classList.remove('on')
+      if (section === 'all') {
+        cells[i].classList.remove('on')
+      }
+      if (section === 'drums') {
+        if (cells[i].classList.contains('drums')) {
+          cells[i].classList.remove('on')
+        }
+      }
+      if (section === 'lead') {
+        if (cells[i].classList.contains('lead')) {
+          cells[i].classList.remove('on')
+        }
+      }
+      if (section === 'bass') {
+        if (cells[i].classList.contains('bass')) {
+          cells[i].classList.remove('on')
+        }
+      }
     }
   }
+
 
 
   //* Move playhead
@@ -505,7 +525,6 @@ function init() {
         && (cells[i].classList.contains('on'))) {
         const noteToPlay = cells[i].classList[0].slice(1) - 1
 
-
         if (cells[i].classList.contains('lead')) {
           playLead(activeLeadChord[noteToPlay].frequency)
           console.log(activeLeadChord[noteToPlay].name)
@@ -516,11 +535,9 @@ function init() {
           console.log(activeBassChord[noteToPlay].name)
         }
 
-
         if (cells[i].classList.contains('drums')) {
           playDrums(drums[noteToPlay].name)
         }
-
 
       }
     }
@@ -534,38 +551,50 @@ function init() {
   stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
   changeNotesButton.addEventListener('click', handleChangeNotes)
+  fourToTheFloorButton.addEventListener('click', handleFourFourKick)
+  newDrumPattern.addEventListener('click', addRandomDrumPattern)
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
   }
 
 
-  function presetPattern() {
-    // cells[176].classList.add('on')
-    // cells[180].classList.add('on')
-    // cells[184].classList.add('on')
-    // cells[188].classList.add('on')
+  //* Preset patterns
+  const fourToTheFloor = [176, 180, 184, 188]
 
-    cells[1].classList.add('on')
-    cells[16].classList.add('on')
-    cells[24].classList.add('on')
-    cells[58].classList.add('on')
+  const drumsPresets = [
+    [174, 183, 189, 184, 176, 180, 184, 188],
+    [129, 187, 190, 184, 180, 170, 184, 188],
+    [130, 183, 189, 184, 176, 160, 181, 188],
+    [134, 183, 189, 184, 191, 165, 182, 190]
+  ]
 
-    cells[30].classList.add('on')
-    cells[29].classList.add('on')
-    // cells[17].classList.add('on')
-    cells[20].classList.add('on')
 
-    cells[65].classList.add('on')
-    cells[75].classList.add('on')
-    cells[90].classList.add('on')
 
-    cells[100].classList.add('on')
-    cells[112].classList.add('on')
-    // cells[17].classList.add('on')
-    cells[118].classList.add('on')
+  function presetPattern(cellsToAdd) {
+    cellsToAdd.map(cell => {
+      cells[cell].classList.add('on')
+    })
   }
-  presetPattern()
+
+  function addRandomDrumPattern() {
+    console.log('random drums')
+    clearCells('drums')
+
+    //* Picks a random drum preset
+    presetPattern(drumsPresets[Math.floor(Math.random() * drumsPresets.length)])
+
+
+  }
+
+
+  function handleFourFourKick() {
+    clearCells('drums')
+    presetPattern(fourToTheFloor)
+  }
+
+
+
 
 }
 
