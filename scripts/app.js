@@ -425,7 +425,7 @@ function init() {
 
   //* Controls 
   const playButton = document.querySelector('.play-button')
-  const stopButton = document.querySelector('.stop-button')
+  // const stopButton = document.querySelector('.stop-button')
   const clearGridButton = document.querySelector('.clear-grid-button')
   const changeNotesButton = document.querySelector('.change-notes-button')
   const fourToTheFloorButton = document.querySelector('.four-to-the-floor-button')
@@ -442,6 +442,7 @@ function init() {
       startTimer()
       isPlaying = true
       playButton.innerText = 'Stop'
+      playButton.classList.add('playing')
     } else {
       handleStop()
     }
@@ -454,6 +455,7 @@ function init() {
     playheadPosition = 0
     isPlaying = false
     playButton.innerText = 'Play'
+    playButton.classList.remove('playing')
     updateCells()
   }
 
