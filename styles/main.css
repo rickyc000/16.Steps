@@ -7,11 +7,27 @@ html, body {
   background-color: black;
   color: white;
   font-family: 'Josefin Sans', sans-serif;
-  
+  margin: 0;
+  padding: 0;
 }
 
 header {
   display: flex;
+  justify-content: space-between;
+  /* border-bottom: 1px solid white; */
+  padding: 10px;
+}
+
+h1, h4 {
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+
+.grid-section {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
   justify-content: space-between;
 }
 
@@ -43,14 +59,82 @@ header {
  /* background-color: rgb(138, 138, 138); */
 }
 
-.grid-wrapper {
+.grid-column {
   display: flex;
   /* height: 60vh; */
   justify-content: center;
-  /* align-items: center; */
+  align-items: center;
   display: flex;
   flex-direction: column;
+  
+  /* border: 1px dashed red; */
 }
+
+.left-column,
+.right-column {
+  /* background-color: lightblue; */
+  width: 100%;
+  /* position: absolute; */
+  /* display: flex; */
+  /* justify-items: flex-end; */
+  /* border: 1px solid green; */
+  /* position: absolute; */
+}
+.controls {
+  /* border: 2px solid white; */
+  /* height: 100%; */
+  /* width: 150px; */
+  padding: 5px;
+  height: 391px;
+}
+
+.drums-controls {
+  background-color: mediumturquoise;
+  color: black;
+  height: 200px;
+  margin: 35px 20px 6px 26px;
+}
+
+.lead-synth-controls {
+  background-color: violet;
+  color: black;
+  height: 200px;
+  margin: 15px 20px 6px 36px;
+}
+
+.bass-synth-controls {
+  background-color: yellow;
+  color: black;
+  height: 200px;
+  margin: 35px 35px 12px 12px;
+}
+
+h4 {
+  font-size: 30px;
+}
+
+/* .right-controls {
+  margin-left: 100%;
+} */
+
+/* .left-controls {
+  /* margin: 5px; */
+  /* position: relative; */
+  /* justify-self: flex-end; */
+  /* right: 0;
+} */
+
+
+
+/* .left-column {
+  position: relative;
+  right: 0;
+}
+
+.right-column {
+  position: relative;
+  left: 0;
+} */
 
 .knob {
   background-color: lightpink;
@@ -69,6 +153,7 @@ button {
   padding: 5px;
   cursor: pointer;
   outline: none;
+  margin: 3px;
   /* height: 50px; */
   /* width: 110px; */
   /* border-radius: 35%; */
@@ -105,12 +190,15 @@ button {
 }
 
 
+
+
 .play-button {
   margin: 5px;
   width: 160px;
   font-size: 50px;
   height: 72px;
   transition: 0.2s;
+  width: 525px;
   /* justify-self: flex-start; */
 }
 
@@ -129,14 +217,17 @@ button {
 
 div.lead {
   background-color: rgb(223, 223, 223);
+  background-color: violet;
 }
 
 div.bass {
   background-color: rgb(187, 187, 187);
+  background-color: yellow;
 }
 
 div.drums {
   background-color: rgb(138, 138, 138);
+  background-color: mediumturquoise;
 }
 
 div.active {
@@ -147,9 +238,13 @@ div.on {
   background-color: rgb(157, 255, 118);
 }
 
+div.on:hover {
+  background-color: rgb(157, 255, 118);
+}
+
 div.active.on {
-  background-color: rgb(244, 255, 88);
-  border: 1px solid rgb(244, 255, 88);
+  background-color: rgb(255, 251, 38);
+  border: 1px solid rgb(255, 251, 38);
   /* transition: 0.1s; */
 }
 
