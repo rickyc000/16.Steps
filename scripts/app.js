@@ -441,8 +441,9 @@ function init() {
       triggersSample()
       startTimer()
       isPlaying = true
+      playButton.innerText = 'Stop'
     } else {
-      return
+      handleStop()
     }
   }
 
@@ -452,6 +453,7 @@ function init() {
     clearInterval(timerId)
     playheadPosition = 0
     isPlaying = false
+    playButton.innerText = 'Play'
     updateCells()
   }
 
@@ -548,7 +550,7 @@ function init() {
 
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
-  stopButton.addEventListener('click', handleStop)
+  // stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
   changeNotesButton.addEventListener('click', handleChangeNotes)
   fourToTheFloorButton.addEventListener('click', handleFourFourKick)
@@ -583,7 +585,6 @@ function init() {
 
     //* Picks a random drum preset
     presetPattern(drumsPresets[Math.floor(Math.random() * drumsPresets.length)])
-
 
   }
 

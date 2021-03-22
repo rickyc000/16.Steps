@@ -56,9 +56,11 @@ header {
 
 .grid-wrapper {
   display: flex;
-  height: 60vh;
+  /* height: 60vh; */
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
+  display: flex;
+  flex-direction: column;
 }
 
 .knob {
@@ -71,19 +73,26 @@ header {
 }
 
 button {
-  border: none;
-  background-color: lightcyan;
-  height: 50px;
-  width: 110px;
+  border: 2px solid white;
+  color: white;
+  background-color: black;
+  font-size: 20px;
+  padding: 5px;
+  cursor: pointer;
+  /* height: 50px; */
+  /* width: 110px; */
+  /* border-radius: 40%; */
 }
 
 .grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  height: 300px;
-  width: 500px;
-  border: 1px solid black;
+  /* justify-content: center; */
+  height: 391px;
+  width: 525px;
+  margin: 5px;
+  /* border: 1px solid hotpink;f */
+  /* overflow: auto; */
 }
 
 
@@ -92,13 +101,19 @@ button {
   border: 1px solid black;
   /* background-color: rgb(207, 207, 207); */
   background-color: white;
-  height: 10%;
+  height: 8.4%;
   width: 6.25%;
   padding: 10px;
+  /* overflow: none; */
   /* border-radius: 20%; */
   /* box-shadow: 1px 1px white; */
 }
-
+.play-button {
+  margin: 5px;
+  width: 80px;
+  height: 42px;
+  /* justify-self: flex-start; */
+}
 
 
 div.lead {
