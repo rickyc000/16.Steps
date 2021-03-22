@@ -4,7 +4,54 @@
 }
 
 html, body {
-  background-color: palegoldenrod;
+  background-color: black;
+  color: white;
+  font-family: 'Josefin Sans', sans-serif;
+  
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* .title-wrapper {
+  border: 1px solid white;
+  background-color: white;
+  color: black;
+} */
+
+.title {
+  font-size: 50px;
+  padding: 5px 0 0;
+}
+
+.about-wrapper {
+  /* border: 1px solid white; */
+  /* background-color: white; */
+  color: black;
+  /* font-size: 50px; */
+  /* border-radius: 100%; */
+  /* height: 80px; */
+  /* width: 80px; */
+  /* display: flex;
+  justify-content: center;
+  text-align: center; */
+}
+
+.about {
+  /* width: 60px;
+  height: 60px; */
+  color: black;
+  border: 3px solid white;
+  padding: 5px 17px;
+  border-radius: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 40px;
+ /* background-color: rgb(138, 138, 138); */
 }
 
 .grid-wrapper {
@@ -36,13 +83,15 @@ button {
   justify-content: center;
   height: 300px;
   width: 500px;
+  border: 1px solid black;
 }
 
 
 .grid div {
   border: 1px solid rgb(87, 189, 174);
-  border: 1px solid white;
+  border: 1px solid black;
   /* background-color: rgb(207, 207, 207); */
+  background-color: white;
   height: 10%;
   width: 6.25%;
   padding: 10px;
@@ -53,7 +102,7 @@ button {
 
 
 div.lead {
-  background-color: lightgray;
+  background-color: rgb(223, 223, 223);
 }
 
 div.bass {
@@ -61,7 +110,7 @@ div.bass {
 }
 
 div.drums {
-  background-color: rgb(156, 156, 156);
+  background-color: rgb(138, 138, 138);
 }
 
 div.active {
@@ -69,6 +118,11 @@ div.active {
 }
 
 div.on {
-  background-color: lightgreen;
+  background-color: rgb(157, 255, 118);
+}
+
+div.active.on {
+  background-color: rgb(244, 255, 88);
+  border: 1px solid rgb(244, 255, 88);
 }
 
