@@ -214,7 +214,7 @@ function init() {
   let playheadPosition = 0
   let isPlaying = false
 
-  let BPM = createKnob(80, 200, 80, 'Tempo')
+  let BPM = createKnob(80, 190)
 
   //* Timer
   function startTimer() {
@@ -229,6 +229,7 @@ function init() {
     console.log(newBPM + ' newBPM')
     BPM = newBPM
   }
+  updateTempo(135)
 
   //* CREATE KNOB FUNCTION
 
@@ -236,18 +237,18 @@ function init() {
 
   // console.log(tempoKnobWrapper)
 
-  function createKnob(min, max, defaultValue) {
+  function createKnob(min, max) {
     const knob = document.createElement('button')
     knob.classList = 'knob'
     // knob.innerText = `${knobName}`
-    let knobPosition = defaultValue
+    let knobPosition = 0
     knob.style = `--percentage:${knobPosition}`
     tempoKnobWrapper.appendChild(knob)
 
 
     let knobEngaged = false
     let previousY = null
-    let knobPercentage = ((knobPosition + 50) / 280) * 100
+    let knobPercentage = ((knobPosition + 50) / 290) * 100
 
     const range = max - min
 
@@ -272,8 +273,8 @@ function init() {
         previousY = Y
 
         //* If the knob is at the top/bottom, do nothing:
-        if (knobPosition <= -50 && isGoingUp === false ||
-          knobPosition >= 230 && isGoingUp === true) {
+        if (knobPosition <= -145 && isGoingUp === false ||
+          knobPosition >= 145 && isGoingUp === true) {
           return
         }
 
@@ -284,7 +285,7 @@ function init() {
         knob.style = `--percentage:${knobPosition}`
 
         //* Turns the value into a percentage
-        knobPercentage = ((knobPosition + 50) / 280) * 100
+        knobPercentage = ((knobPosition + 145) / 290) * 100
         console.log(knobPercentage + '%')
 
         //* Turn this value into a range between 80 / 200
@@ -554,7 +555,6 @@ function init() {
       }
     }
   }
-
 
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
