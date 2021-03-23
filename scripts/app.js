@@ -1,6 +1,8 @@
 function init() {
   console.log('Javascript is running')
 
+  const tempoKnobWrapper = document.querySelector('.tempo-knob-wrapper')
+
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
     1,
@@ -63,15 +65,12 @@ function init() {
   bassGainControl.gain.setValueAtTime(0.7, audioContext.currentTime)
   bassGainControl.connect(primaryGainControl)
 
-
-
   let leadMuted = false
 
   //* SYNTH 1
   function playLead(freq) {
 
     if (leadMuted === false) {
-
 
       const synthOscillator = audioContext.createOscillator()
       const synthOscillator2 = audioContext.createOscillator()
@@ -98,7 +97,7 @@ function init() {
       leadFilter2.frequency.value = 100
       leadFilter2.Q.value = 1
       leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
-      // leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.025)
+
       leadFilter2.connect(lead2GainControl)
 
       synthOscillator2.frequency.setValueAtTime(freq, 0)
@@ -233,13 +232,17 @@ function init() {
 
   //* CREATE KNOB FUNCTION
 
+  
+
+  // console.log(tempoKnobWrapper)
+
   function createKnob(min, max, defaultValue, knobName) {
     const knob = document.createElement('button')
     knob.classList = 'knob'
-    knob.innerText = `${knobName}`
+    // knob.innerText = `${knobName}`
     let knobPosition = defaultValue
     knob.style = `--percentage:${knobPosition}`
-    document.body.appendChild(knob)
+    tempoKnobWrapper.appendChild(knob)
 
 
     let knobEngaged = false
@@ -402,6 +405,8 @@ function init() {
     { name: 'snare' },
     { name: 'kick' }
   ]
+
+  
 
   //* Grid variables
   const grid = document.querySelector('.grid')

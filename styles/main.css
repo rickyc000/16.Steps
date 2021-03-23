@@ -26,9 +26,9 @@ h1, h4 {
 
 .grid-section {
   display: flex;
-  width: 100%;
-  /* margin-top: 20px; */
-  justify-content: space-between;
+  /* width: 100%; */
+  margin-top: 20px;
+  justify-content: center;
 }
 
 
@@ -57,20 +57,14 @@ h1, h4 {
 
 .grid-column {
   display: flex;
-  /* height: 60vh; */
-  /* justify-content: center; */
-  /* align-items: center; */
-  display: flex;
   flex-direction: column;
-  
-  /* border: 1px dashed red; */
 }
 
-.left-column,
+/* .left-column,
 .right-column {
   width: 100%;
 }
-
+ */
 
 .drums-controls {
   background-color: mediumturquoise;
@@ -81,10 +75,12 @@ h1, h4 {
 .lead-synth-controls,
 .bass-synth-controls {
   height: 128px;
+  /* height: 100px; */
   color: black;
   width: 300px;
-  margin-left: 6vw;
-  /* margin: 5px 45px 5px 35px; */
+  /* margin-left: 6vw; */
+  margin: 6px 35px 5px 35px;
+  box-shadow: 2px 3px lightgrey;
 }
 
 .lead-synth-controls {
@@ -101,6 +97,18 @@ h4 {
   margin: 2px;
 }
 
+.right-column {
+  border: 2px solid white;
+  margin: 5px 45px;
+  height: 262px;
+  background-color: lightgrey;
+  border-top: violet 12px solid;
+  border-bottom: violet 12px solid;
+  border-left: mediumturquoise 12px solid;
+  border-right: yellow 12px solid;
+  width: 300px;
+}
+
 
 .knob {
   background-color: lightpink;
@@ -111,15 +119,27 @@ h4 {
   transform: rotate(calc(var(--percentage, 0) * 1deg));
 }
 
+.knob::after {
+    content: '';
+    position: absolute;
+    height: 30%;
+    width: 4px;
+    background: black;
+    left: 50%;
+    top: 10%;
+    /* margin: 0 0 0 -1px; */
+    /* transform-origin: 100% 200%; */
+    /* /* transform: rotate( */}
+
 button {
   border: 2px solid white;
   color: white;
   background-color: black;
   font-size: 12px;
-  padding: 5px;
+  padding: 4px;
   cursor: pointer;
   outline: none;
-  margin: 1px;
+  margin: 2px;
 
 }
 
@@ -129,6 +149,7 @@ button {
   height: 391px;
   width: 525px;
   margin: 5px;
+  /* box-shadow: 2px 3px lightgrey; */
 }
 
 
@@ -156,6 +177,7 @@ button {
   height: 72px;
   transition: 0.2s;
   width: 525px;
+  box-shadow: 2px 3px lightgrey;
   /* justify-self: flex-start; */
 }
 
