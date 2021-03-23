@@ -27,15 +27,11 @@ h1, h4 {
 .grid-section {
   display: flex;
   width: 100%;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   justify-content: space-between;
 }
 
-/* .title-wrapper {
-  border: 1px solid white;
-  background-color: white;
-  color: black;
-} */
+
 
 .title {
   font-size: 50px;
@@ -62,8 +58,8 @@ h1, h4 {
 .grid-column {
   display: flex;
   /* height: 60vh; */
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  /* align-items: center; */
   display: flex;
   flex-direction: column;
   
@@ -72,69 +68,39 @@ h1, h4 {
 
 .left-column,
 .right-column {
-  /* background-color: lightblue; */
   width: 100%;
-  /* position: absolute; */
-  /* display: flex; */
-  /* justify-items: flex-end; */
-  /* border: 1px solid green; */
-  /* position: absolute; */
 }
-.controls {
-  /* border: 2px solid white; */
-  /* height: 100%; */
-  /* width: 150px; */
-  padding: 5px;
-  height: 391px;
-}
+
 
 .drums-controls {
   background-color: mediumturquoise;
+
+}
+
+.drums-controls,
+.lead-synth-controls,
+.bass-synth-controls {
+  height: 128px;
   color: black;
-  height: 200px;
-  margin: 35px 20px 6px 26px;
+  width: 300px;
+  margin-left: 6vw;
+  /* margin: 5px 45px 5px 35px; */
 }
 
 .lead-synth-controls {
   background-color: violet;
-  color: black;
-  height: 200px;
-  margin: 15px 20px 6px 36px;
 }
 
 .bass-synth-controls {
   background-color: yellow;
-  color: black;
-  height: 200px;
-  margin: 35px 35px 12px 12px;
+
 }
 
 h4 {
   font-size: 30px;
+  margin: 2px;
 }
 
-/* .right-controls {
-  margin-left: 100%;
-} */
-
-/* .left-controls {
-  /* margin: 5px; */
-  /* position: relative; */
-  /* justify-self: flex-end; */
-  /* right: 0;
-} */
-
-
-
-/* .left-column {
-  position: relative;
-  right: 0;
-}
-
-.right-column {
-  position: relative;
-  left: 0;
-} */
 
 .knob {
   background-color: lightpink;
@@ -149,11 +115,11 @@ button {
   border: 2px solid white;
   color: white;
   background-color: black;
-  font-size: 20px;
+  font-size: 12px;
   padding: 5px;
   cursor: pointer;
   outline: none;
-  margin: 3px;
+  margin: 1px;
   /* height: 50px; */
   /* width: 110px; */
   /* border-radius: 35%; */
@@ -162,26 +128,19 @@ button {
 .grid {
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: center; */
   height: 391px;
   width: 525px;
   margin: 5px;
-  /* border: 1px solid hotpink;f */
-  /* overflow: auto; */
 }
 
 
 .grid div {
   border: 1px solid rgb(87, 189, 174);
   border: 1px solid black;
-  /* background-color: rgb(207, 207, 207); */
   background-color: white;
   height: 8.4%;
   width: 6.25%;
   padding: 10px;
-  /* overflow: none; */
-  /* border-radius: 20%; */
-  /* box-shadow: 1px 1px white; */
 }
 
 .grid div:hover {

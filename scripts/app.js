@@ -430,6 +430,8 @@ function init() {
   const changeNotesButton = document.querySelector('.change-notes-button')
   const fourToTheFloorButton = document.querySelector('.four-to-the-floor-button')
   const newDrumPattern = document.querySelector('.new-drum-pattern')
+  const offBeatHiHatButton = document.querySelector('.off-beat-hihat')
+  const snareButton = document.querySelector('.snare-on-two-four')
 
 
   //* Play sequence
@@ -557,6 +559,9 @@ function init() {
   changeNotesButton.addEventListener('click', handleChangeNotes)
   fourToTheFloorButton.addEventListener('click', handleFourFourKick)
   newDrumPattern.addEventListener('click', addRandomDrumPattern)
+  offBeatHiHatButton.addEventListener('click', addOffBeatHiHat)
+  snareButton.addEventListener('click', addSnareOnTwoFour)
+
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
@@ -564,21 +569,29 @@ function init() {
 
 
   //* Preset patterns
-  const fourToTheFloor = [176, 180, 184, 188]
+  const fourToTheFloor = [177, 181, 185, 189]
+  const offBeatHiHat = [131, 135, 139, 143]
+  const snareOnTwoFour = [165, 173]
 
   const drumsPresets = [
-    [174, 183, 189, 184, 176, 180, 184, 188],
-    [129, 187, 190, 184, 180, 170, 184, 188],
-    [130, 183, 189, 184, 176, 160, 181, 188],
-    [134, 183, 189, 184, 191, 165, 182, 190]
+    [129, 131, 133, 134, 135, 137, 138, 139, 140 , 141, 143, 144, 165, 173, 177, 180, 181, 183, 187, 189],
+    [129, 133, 137, 140, 147, 153, 156, 175, 177, 181, 185, 188, 191, 192]
   ]
 
 
 
   function presetPattern(cellsToAdd) {
     cellsToAdd.map(cell => {
-      cells[cell].classList.add('on')
+      cells[cell - 1].classList.add('on')
     })
+  }
+
+  function addOffBeatHiHat() {
+    presetPattern(offBeatHiHat)
+  }
+
+  function addSnareOnTwoFour() {
+    presetPattern(snareOnTwoFour)
   }
 
   function addRandomDrumPattern() {
@@ -592,7 +605,7 @@ function init() {
 
 
   function handleFourFourKick() {
-    clearCells('drums')
+    // clearCells('drums')
     presetPattern(fourToTheFloor)
   }
 
