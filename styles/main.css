@@ -120,9 +120,7 @@ button {
   cursor: pointer;
   outline: none;
   margin: 1px;
-  /* height: 50px; */
-  /* width: 110px; */
-  /* border-radius: 35%; */
+
 }
 
 .grid {
@@ -207,3 +205,6 @@ div.active.on {
   /* transition: 0.1s; */
 }
 
+div.muted {
+  opacity: 50%;
+}

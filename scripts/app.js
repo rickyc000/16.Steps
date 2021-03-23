@@ -65,143 +65,155 @@ function init() {
 
 
 
-
+  let leadMuted = false
 
   //* SYNTH 1
   function playLead(freq) {
-    const synthOscillator = audioContext.createOscillator()
-    const synthOscillator2 = audioContext.createOscillator()
 
-    //* OSC 1
-    const leadFilter = audioContext.createBiquadFilter()
-    leadFilter.type = 'lowpass'
-    leadFilter.frequency.value = 10
-    leadFilter.Q.value = 20
-    leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
-    // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
-    leadFilter.connect(leadGainControl)
-
-    synthOscillator.frequency.setValueAtTime(freq, 0)
-    synthOscillator.type = 'sawtooth'
-    synthOscillator.connect(leadFilter)
-    synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.1)
+    if (leadMuted === false) {
 
 
-    //* OSC 2
-    const leadFilter2 = audioContext.createBiquadFilter()
-    leadFilter2.type = 'bandpass'
-    leadFilter2.frequency.value = 100
-    leadFilter2.Q.value = 1
-    leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
-    // leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.025)
-    leadFilter2.connect(lead2GainControl)
+      const synthOscillator = audioContext.createOscillator()
+      const synthOscillator2 = audioContext.createOscillator()
 
-    synthOscillator2.frequency.setValueAtTime(freq, 0)
-    synthOscillator2.type = 'square'
-    synthOscillator2.connect(leadFilter2)
-    synthOscillator2.start(audioContext.currentTime + 0.03)
-    synthOscillator2.stop(audioContext.currentTime + 0.125)
+      //* OSC 1
+      const leadFilter = audioContext.createBiquadFilter()
+      leadFilter.type = 'lowpass'
+      leadFilter.frequency.value = 10
+      leadFilter.Q.value = 20
+      leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
+      // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
+      leadFilter.connect(leadGainControl)
+
+      synthOscillator.frequency.setValueAtTime(freq, 0)
+      synthOscillator.type = 'sawtooth'
+      synthOscillator.connect(leadFilter)
+      synthOscillator.start()
+      synthOscillator.stop(audioContext.currentTime + 0.1)
+
+
+      //* OSC 2
+      const leadFilter2 = audioContext.createBiquadFilter()
+      leadFilter2.type = 'bandpass'
+      leadFilter2.frequency.value = 100
+      leadFilter2.Q.value = 1
+      leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
+      // leadFilter2.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.025)
+      leadFilter2.connect(lead2GainControl)
+
+      synthOscillator2.frequency.setValueAtTime(freq, 0)
+      synthOscillator2.type = 'square'
+      synthOscillator2.connect(leadFilter2)
+      synthOscillator2.start(audioContext.currentTime + 0.03)
+      synthOscillator2.stop(audioContext.currentTime + 0.125)
+    }
   }
+
+  let bassMuted = false
 
   function playBass(freq) {
-    const synthOscillator = audioContext.createOscillator()
 
-    // const distortion = audioContext.createWaveShaper()
+    if (bassMuted === false) {
 
-    const bassFilter = audioContext.createBiquadFilter()
-    bassFilter.type = 'lowpass'
-    bassFilter.frequency.value = 1000
-    bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
-    bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
-    bassFilter.connect(bassGainControl)
+      const synthOscillator = audioContext.createOscillator()
+      // const distortion = audioContext.createWaveShaper()
+
+      const bassFilter = audioContext.createBiquadFilter()
+      bassFilter.type = 'lowpass'
+      bassFilter.frequency.value = 1000
+      bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
+      bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
+      bassFilter.connect(bassGainControl)
 
 
-    synthOscillator.frequency.setValueAtTime(freq, 0)
-    synthOscillator.type = 'sawtooth'
-    synthOscillator.connect(bassFilter)
-    synthOscillator.start()
-    synthOscillator.stop(audioContext.currentTime + 0.2)
+      synthOscillator.frequency.setValueAtTime(freq, 0)
+      synthOscillator.type = 'sawtooth'
+      synthOscillator.connect(bassFilter)
+      synthOscillator.start()
+      synthOscillator.stop(audioContext.currentTime + 0.2)
+    }
+
   }
+  let drumsMuted = false
 
   function playDrums(note) {
 
-    if (note === 'kick') {
-      const synthOscillator = audioContext.createOscillator()
-      synthOscillator.frequency.exponentialRampToValueAtTime(
-        0.2,
-        audioContext.currentTime + 0.2
-      )
-      synthOscillator.type = 'sine'
-      synthOscillator.connect(kickFilter)
-      synthOscillator.start()
-      synthOscillator.stop(audioContext.currentTime + 0.5)
-    }
+    if (drumsMuted === false) {
 
-    if (note === 'snare') {
-      const lowTone = audioContext.createOscillator()
-      lowTone.type = 'triangle'
-      lowTone.frequency.value = 100
+      if (note === 'kick') {
+        const synthOscillator = audioContext.createOscillator()
+        synthOscillator.frequency.exponentialRampToValueAtTime(
+          0.2,
+          audioContext.currentTime + 0.2
+        )
+        synthOscillator.type = 'sine'
+        synthOscillator.connect(kickFilter)
+        synthOscillator.start()
+        synthOscillator.stop(audioContext.currentTime + 0.5)
+      }
 
-      const hiTone = audioContext.createOscillator()
-      hiTone.type = 'triangle'
-      hiTone.frequency.value = 300
+      if (note === 'snare') {
+        const lowTone = audioContext.createOscillator()
+        lowTone.type = 'triangle'
+        lowTone.frequency.value = 100
 
-      const whiteNoiseSource = audioContext.createBufferSource()
-      whiteNoiseSource.buffer = buffer
+        const hiTone = audioContext.createOscillator()
+        hiTone.type = 'triangle'
+        hiTone.frequency.value = 300
 
-      lowTone.connect(snareFilter)
-      hiTone.connect(snareFilter)
-      whiteNoiseSource.connect(snareFilter)
+        const whiteNoiseSource = audioContext.createBufferSource()
+        whiteNoiseSource.buffer = buffer
 
-      lowTone.start(audioContext.currentTime)
-      lowTone.stop(audioContext.currentTime + 0.1)
+        lowTone.connect(snareFilter)
+        hiTone.connect(snareFilter)
+        whiteNoiseSource.connect(snareFilter)
 
-      hiTone.start(audioContext.currentTime)
-      hiTone.stop(audioContext.currentTime + 0.07)
+        lowTone.start(audioContext.currentTime)
+        lowTone.stop(audioContext.currentTime + 0.1)
 
-      whiteNoiseSource.start()
-      whiteNoiseSource.stop(audioContext.currentTime + 0.1)
-    }
+        hiTone.start(audioContext.currentTime)
+        hiTone.stop(audioContext.currentTime + 0.07)
 
-    if (note === 'hihat') {
-      const whiteNoiseSource = audioContext.createBufferSource()
-      whiteNoiseSource.buffer = buffer
+        whiteNoiseSource.start()
+        whiteNoiseSource.stop(audioContext.currentTime + 0.1)
+      }
 
-      whiteNoiseSource.connect(hatFilter)
+      if (note === 'hihat') {
+        const whiteNoiseSource = audioContext.createBufferSource()
+        whiteNoiseSource.buffer = buffer
 
-      whiteNoiseSource.start()
-      whiteNoiseSource.stop(audioContext.currentTime + 0.01)
-    }
+        whiteNoiseSource.connect(hatFilter)
 
-    if (note === 'clap') {
+        whiteNoiseSource.start()
+        whiteNoiseSource.stop(audioContext.currentTime + 0.01)
+      }
 
-      const hiTone = audioContext.createOscillator()
-      hiTone.type = 'sawtooth'
-      hiTone.frequency.value = 300
+      if (note === 'clap') {
 
-      hiTone.start(audioContext.currentTime)
-      hiTone.stop(audioContext.currentTime + 0.07)
-      hiTone.connect(snareFilter)
+        const hiTone = audioContext.createOscillator()
+        hiTone.type = 'sawtooth'
+        hiTone.frequency.value = 300
 
-      const whiteNoiseSource = audioContext.createBufferSource()
-      whiteNoiseSource.buffer = buffer
+        hiTone.start(audioContext.currentTime)
+        hiTone.stop(audioContext.currentTime + 0.07)
+        hiTone.connect(snareFilter)
 
-      whiteNoiseSource.connect(clapFilter)
+        const whiteNoiseSource = audioContext.createBufferSource()
+        whiteNoiseSource.buffer = buffer
 
-      whiteNoiseSource.start()
-      whiteNoiseSource.stop(audioContext.currentTime + 0.1)
+        whiteNoiseSource.connect(clapFilter)
+
+        whiteNoiseSource.start()
+        whiteNoiseSource.stop(audioContext.currentTime + 0.1)
+      }
     }
   }
-
 
 
 
   let timerId = null
   let playheadPosition = 0
   let isPlaying = false
-
-
 
   let BPM = createKnob(80, 200, 80, 'Tempo')
 
@@ -280,7 +292,6 @@ function init() {
 
     knob.addEventListener('mousedown', engageKnob)
     window.addEventListener('mouseup', disengageKnob)
-
     window.addEventListener('mousemove', event => {
       rotaryMove(event.clientY)
     })
@@ -344,7 +355,6 @@ function init() {
 
 
   function setChord(chord, notes) {
-
     const note1 = notes.filter(note => {
       return note.name === chord[0]
     })
@@ -357,7 +367,6 @@ function init() {
     const note4 = notes.filter(note => {
       return note.name === chord[3]
     })
-
     return [note1[0], note2[0], note3[0], note4[0]]
   }
 
@@ -383,14 +392,8 @@ function init() {
 
   //* On click, randomly update active chord
   function handleChangeNotes() {
-    console.log('change')
     setActiveChords()
   }
-
-  // setChord(chords[Math.floor(Math.random() * chords.length)], leadNotes)
-
-  console.log(activeLeadChord, activeBassChord)
-
 
   //* Drums
   const drums = [
@@ -425,13 +428,18 @@ function init() {
 
   //* Controls 
   const playButton = document.querySelector('.play-button')
-  // const stopButton = document.querySelector('.stop-button')
   const clearGridButton = document.querySelector('.clear-grid-button')
   const changeNotesButton = document.querySelector('.change-notes-button')
   const fourToTheFloorButton = document.querySelector('.four-to-the-floor-button')
   const newDrumPattern = document.querySelector('.new-drum-pattern')
   const offBeatHiHatButton = document.querySelector('.off-beat-hihat')
   const snareButton = document.querySelector('.snare-on-two-four')
+  const clearDrumsButton = document.querySelector('.clear-drums')
+  const clearLeadButton = document.querySelector('.clear-synth-1')
+  const clearBassButton = document.querySelector('.clear-synth-2')
+  const muteDrumsButton = document.querySelector('.mute-drums')
+  const muteLeadButton = document.querySelector('.mute-synth-1')
+  const muteBassButton = document.querySelector('.mute-synth-2')
 
 
   //* Play sequence
@@ -452,7 +460,6 @@ function init() {
 
   //* Stop sequence
   function handleStop() {
-    console.log('stop!')
     clearInterval(timerId)
     playheadPosition = 0
     isPlaying = false
@@ -530,37 +537,34 @@ function init() {
       if (cells[i].classList.contains(`X${playheadPosition}`)
         && (cells[i].classList.contains('on'))) {
         const noteToPlay = cells[i].classList[0].slice(1) - 1
-
         if (cells[i].classList.contains('lead')) {
           playLead(activeLeadChord[noteToPlay].frequency)
-          console.log(activeLeadChord[noteToPlay].name)
         }
-
         if (cells[i].classList.contains('bass')) {
           playBass(activeBassChord[noteToPlay].frequency)
-          console.log(activeBassChord[noteToPlay].name)
         }
-
         if (cells[i].classList.contains('drums')) {
           playDrums(drums[noteToPlay].name)
         }
-
       }
     }
   }
 
 
-
-
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
-  // stopButton.addEventListener('click', handleStop)
   clearGridButton.addEventListener('click', handleClearGrid)
   changeNotesButton.addEventListener('click', handleChangeNotes)
   fourToTheFloorButton.addEventListener('click', handleFourFourKick)
   newDrumPattern.addEventListener('click', addRandomDrumPattern)
   offBeatHiHatButton.addEventListener('click', addOffBeatHiHat)
   snareButton.addEventListener('click', addSnareOnTwoFour)
+  clearDrumsButton.addEventListener('click', clearInstrument)
+  clearLeadButton.addEventListener('click', clearInstrument)
+  clearBassButton.addEventListener('click', clearInstrument)
+  muteDrumsButton.addEventListener('click', muteInstrument)
+  muteLeadButton.addEventListener('click', muteInstrument)
+  muteBassButton.addEventListener('click', muteInstrument)
 
 
   for (let i = 0; i < cells.length; i++) {
@@ -574,7 +578,7 @@ function init() {
   const snareOnTwoFour = [165, 173]
 
   const drumsPresets = [
-    [129, 131, 133, 134, 135, 137, 138, 139, 140 , 141, 143, 144, 165, 173, 177, 180, 181, 183, 187, 189],
+    [129, 131, 133, 134, 135, 137, 138, 139, 140, 141, 143, 144, 165, 173, 177, 180, 181, 183, 187, 189],
     [129, 133, 137, 140, 147, 153, 156, 175, 177, 181, 185, 188, 191, 192]
   ]
 
@@ -586,6 +590,7 @@ function init() {
     })
   }
 
+  //* Drum functions:
   function addOffBeatHiHat() {
     presetPattern(offBeatHiHat)
   }
@@ -594,24 +599,91 @@ function init() {
     presetPattern(snareOnTwoFour)
   }
 
-  function addRandomDrumPattern() {
-    console.log('random drums')
-    clearCells('drums')
+  function handleFourFourKick() {
+    presetPattern(fourToTheFloor)
+  }
 
+  function addRandomDrumPattern() {
+    clearCells('drums')
     //* Picks a random drum preset
     presetPattern(drumsPresets[Math.floor(Math.random() * drumsPresets.length)])
 
   }
 
+  //* Clear a specific grid
+  function clearInstrument(event) {
+    const instrument = event.target.classList.value
+    if (instrument === 'clear-drums') {
+      clearCells('drums')
+    }
+    if (instrument === 'clear-synth-1') {
+      clearCells('lead')
+    }
+    if (instrument === 'clear-synth-2') {
+      clearCells('bass')
+    }
+  }
 
-  function handleFourFourKick() {
-    // clearCells('drums')
-    presetPattern(fourToTheFloor)
+  //* Mute an instrument
+
+  function instrumentClassUpdate(className, action, instrument) {
+    console.log('ins update')
+
+    if (action === 'add') {
+      for (let i = 0; i < cells.length; i++) {
+        if (cells[i].classList.contains(instrument)) {
+          cells[i].classList.add(className)
+        }
+      }
+    }
+
+    if (action === 'remove') {
+      console.log('this is running')
+      for (let i = 0; i < cells.length; i++) {
+        if (cells[i].classList.contains(instrument)) {
+          cells[i].classList.remove(className)
+        }
+      }
+    }
   }
 
 
+  function muteInstrument(event) {
+    const instrument = event.target.classList.value
 
+    if (instrument === 'mute-drums') {
+      if (drumsMuted === false) {
+        instrumentClassUpdate('muted', 'add', 'drums')
+        drumsMuted = true
+      } else {
+        instrumentClassUpdate('muted', 'remove', 'drums')
+        drumsMuted = false
+      }
+    }
+
+    if (instrument === 'mute-synth-1') {
+      if (leadMuted === false) {
+        instrumentClassUpdate('muted', 'add', 'lead')
+        leadMuted = true
+      } else {
+        instrumentClassUpdate('muted', 'remove', 'lead')
+        leadMuted = false
+      }
+    }
+
+    if (instrument === 'mute-synth-2') {
+      if (bassMuted === false) {
+        instrumentClassUpdate('muted', 'add', 'bass')
+        bassMuted = true
+      } else {
+        instrumentClassUpdate('muted', 'remove', 'bass')
+        bassMuted = false
+      }
+    }
+
+  }
 
 }
+
 
 window.addEventListener('DOMContentLoaded', init)
