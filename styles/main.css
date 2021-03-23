@@ -101,17 +101,30 @@ h4 {
   border: 2px solid white;
   margin: 5px 45px;
   height: 262px;
+  height: 190px;
   background-color: lightgrey;
   border-top: violet 12px solid;
   border-bottom: violet 12px solid;
   border-left: mediumturquoise 12px solid;
   border-right: yellow 12px solid;
-  width: 300px;
+  /* width: 300px; */
+}
+
+.tempo-heading {
+  color: black;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.tempo-knob-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 
 .knob {
-  background-color: lightpink;
+  background-color: violet;
   border-radius: 100%;
   border: none;
   height: 80px;
@@ -124,12 +137,24 @@ h4 {
     position: absolute;
     height: 30%;
     width: 4px;
-    background: black;
+    background: yellow;
     left: 50%;
     top: 10%;
     /* margin: 0 0 0 -1px; */
-    /* transform-origin: 100% 200%; */
-    /* /* transform: rotate( */}
+    /* transform-origin: 100% 200%;  */
+    /* transform: rotate(180deg); */
+  }
+
+.fast-slow-wrapper {
+  display: flex;
+  color: black;
+  /* margin: 10px; */
+}
+
+.fast-slow {
+  margin: 10px;
+}
+
 
 button {
   border: 2px solid white;

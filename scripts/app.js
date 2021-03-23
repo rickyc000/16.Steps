@@ -236,7 +236,7 @@ function init() {
 
   // console.log(tempoKnobWrapper)
 
-  function createKnob(min, max, defaultValue, knobName) {
+  function createKnob(min, max, defaultValue) {
     const knob = document.createElement('button')
     knob.classList = 'knob'
     // knob.innerText = `${knobName}`
