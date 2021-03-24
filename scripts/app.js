@@ -3,6 +3,7 @@ function init() {
 
   const tempoKnobWrapper = document.querySelector('.tempo-knob-wrapper')
   const bassFilterWrapper = document.querySelector('.bass-filter-knob-wrapper')
+  const leadFilterWrapper = document.querySelector('.lead-filter-knob-wrapper')
 
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
@@ -17,10 +18,6 @@ function init() {
   for (let i = 0; i < buffer.length; i++) {
     channelData[i] = Math.random() * 2 - 1
   }
-
-  const now = audioContext.currentTime
-  console.log(now)
-
 
   const primaryGainControl = audioContext.createGain()
   primaryGainControl.gain.setValueAtTime(1, 0)
@@ -70,17 +67,17 @@ function init() {
 
   const leadFilter = audioContext.createBiquadFilter()
   leadFilter.type = 'lowpass'
-  leadFilter.frequency.value = 10
-  leadFilter.Q.value = 20
-  leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
+  // leadFilter.frequency.value = 10
+  leadFilter.Q.value = 10
+  // leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
   // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
   leadFilter.connect(leadGainControl)
 
   const leadFilter2 = audioContext.createBiquadFilter()
   leadFilter2.type = 'bandpass'
-  leadFilter2.frequency.value = 100
+  // leadFilter2.frequency.value = 100
   leadFilter2.Q.value = 1
-  leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
+  // leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
 
   leadFilter2.connect(lead2GainControl)
 
@@ -106,6 +103,8 @@ function init() {
     }
   }
 
+
+  //* BASS SYNTH
   let bassMuted = false
 
   const bassFilter = audioContext.createBiquadFilter()
@@ -114,7 +113,6 @@ function init() {
   bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
   bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
   bassFilter.connect(bassGainControl)
-
 
   function playBass(freq) {
 
@@ -138,6 +136,8 @@ function init() {
 
   }
   let drumsMuted = false
+
+  //* DRUMS
 
   function playDrums(note) {
 
@@ -228,8 +228,8 @@ function init() {
 
 
   const tempoKnob = document.createElement('button')
-  // tempoKnob.classList = 'knob'
   const bassSynthFilterCutoffKnob = document.createElement('button')
+  const leadSynthFilterCutoffKnob = document.createElement('button')
 
 
   //* Create knob function
@@ -285,10 +285,14 @@ function init() {
           BPM = value
         }
         if (parameter === 'bassFilter') {
-          // leadFilter.frequency.value = value
-          // leadFilter2.frequency.value
-          // bassFilter.frequency.value = value
           bassFilter.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.001)
+        }
+        if (parameter === 'leadFilter') {
+          // console.log(value + 'value')
+          leadFilter.frequency.value = value
+          leadFilter2.frequency.value = value
+          // leadFilter2.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.05)
+          // leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
         }
       }
     }
@@ -310,26 +314,27 @@ function init() {
   bassFilterWrapper.appendChild(bassSynthFilterCutoffKnob)
   bassSynthFilterCutoffKnob.classList.add('filter-knob')
 
+  createKnob(10, 5000, 'leadFilter', leadSynthFilterCutoffKnob)
+  leadFilterWrapper.appendChild(leadSynthFilterCutoffKnob)
+  leadSynthFilterCutoffKnob.classList.add('filter-knob', 'lead-filter')
+
 
   //* Notes
-  const bassNotes = [
+  const noteFrequencies = [
     //* Bass octave
     { name: 'C3', frequency: 130.81 },
-    { name: 'C#3', frequency: 277.18 },
-    { name: 'D3', frequency: 293.66 },
-    { name: 'D#3', frequency: 311.13 },
-    { name: 'E3', frequency: 329.63 },
-    { name: 'F3', frequency: 349.23 },
-    { name: 'F#3', frequency: 369.99 },
-    { name: 'G3', frequency: 392.0 },
-    { name: 'G#3', frequency: 415.3 },
-    { name: 'A3', frequency: 440.0 },
-    { name: 'A#3', frequency: 466.16 },
-    { name: 'B3', frequency: 493.88 }
-  ]
+    { name: 'C#3', frequency: 138.59 },
+    { name: 'D3', frequency: 146.83 },
+    { name: 'D#3', frequency: 155.56 },
+    { name: 'E3', frequency: 164.81 },
+    { name: 'F3', frequency: 174.61 },
+    { name: 'F#3', frequency: 185.00 },
+    { name: 'G3', frequency: 196.00 },
+    { name: 'G#3', frequency: 207.65 },
+    { name: 'A3', frequency: 220.00 },
+    { name: 'A#3', frequency: 233.08 },
+    { name: 'B3', frequency: 246.94 },
 
-  const leadNotes = [
-    //* Lead octave
     { name: 'C4', frequency: 261.63 },
     { name: 'C#4', frequency: 277.18 },
     { name: 'D4', frequency: 293.66 },
@@ -343,6 +348,22 @@ function init() {
     { name: 'A#4', frequency: 466.16 },
     { name: 'B4', frequency: 493.88 }
   ]
+
+  // const leadNotes = [
+  //   //* Lead octave
+  //   { name: 'C4', frequency: 261.63 },
+  //   { name: 'C#4', frequency: 277.18 },
+  //   { name: 'D4', frequency: 293.66 },
+  //   { name: 'D#4', frequency: 311.13 },
+  //   { name: 'E4', frequency: 329.63 },
+  //   { name: 'F4', frequency: 349.23 },
+  //   { name: 'F#4', frequency: 369.99 },
+  //   { name: 'G4', frequency: 392.0 },
+  //   { name: 'G#4', frequency: 415.3 },
+  //   { name: 'A4', frequency: 440.0 },
+  //   { name: 'A#4', frequency: 466.16 },
+  //   { name: 'B4', frequency: 493.88 }
+  // ]
 
 
   let activeLeadChord = {
@@ -360,39 +381,81 @@ function init() {
   }
 
 
-  function setChord(chord, notes) {
-    const note1 = notes.filter(note => {
-      return note.name === chord[0]
+  function setChord(chord, instrument) {
+    let note1 = null
+    let note2 = null
+    let note3 = null
+    let note4 = null
+
+    const bassChord = chord.map(noteName => {
+      return `${noteName}3`
     })
-    const note2 = notes.filter(note => {
-      return note.name === chord[1]
+    
+    //* To transpose the notes from octave 3 to 4:
+    const leadChord = chord.map(noteName => {
+      // return noteName.replace('3', '4')
+      return `${noteName}4`
     })
-    const note3 = notes.filter(note => {
-      return note.name === chord[2]
-    })
-    const note4 = notes.filter(note => {
-      return note.name === chord[3]
-    })
+    
+    
+    if (instrument === 'bass') {
+      note1 = noteFrequencies.filter(note => {
+        return note.name === bassChord[0]
+      })
+      note2 = noteFrequencies.filter(note => {
+        return note.name === bassChord[1]
+      })
+      note3 = noteFrequencies.filter(note => {
+        return note.name === bassChord[2]
+      })
+      note4 = noteFrequencies.filter(note => {
+        return note.name === bassChord[3]
+      })
+    }
+
+    if (instrument === 'lead') {
+      note1 = noteFrequencies.filter(note => {
+        return note.name === leadChord[0]
+      })
+      note2 = noteFrequencies.filter(note => {
+        return note.name === leadChord[1]
+      })
+      note3 = noteFrequencies.filter(note => {
+        return note.name === leadChord[2]
+      })
+      note4 = noteFrequencies.filter(note => {
+        return note.name === leadChord[3]
+      })
+    }
+
+
     return [note1[0], note2[0], note3[0], note4[0]]
   }
 
 
-  const bassChords = [
-    ['C3', 'D3', 'F3', 'A3'],
-    ['D3', 'B3', 'F#3', 'G3'],
-    ['B3', 'A3', 'F#3', 'C#3']
-  ]
+  const chords = [
+    ['C', 'D', 'F', 'A'],
+    ['C#', 'E', 'G#', 'A'],
+    ['D', 'F', 'A', 'E'],
+    ['G', 'B', 'D', 'E'],
+    ['A#', 'D', 'E', 'F#'],
+    ['G', 'B', 'D', 'F#'],
+    ['A', 'C#', 'E', 'G#'],
+    ['D', 'G', 'A#', 'C'],
+    ['D', 'F#', 'A', 'B'],
+    ['B', 'D', 'F#', 'A'],
+    ['G#', 'B', 'D#', 'F#']
 
-  const leadChords = [
-    ['C4', 'D4', 'F4', 'A4'],
-    ['D4', 'B4', 'F#4', 'G4'],
-    ['B4', 'A4', 'F#4', 'C#4']
+    // ['D#3', ]
+
+
   ]
 
   function setActiveChords() {
-    const chordNumber = Math.floor(Math.random() * bassChords.length)
-    activeBassChord = setChord(bassChords[chordNumber], bassNotes)
-    activeLeadChord = setChord(leadChords[chordNumber], leadNotes)
+    const chordNumber = Math.floor(Math.random() * chords.length)
+    // const chordNumber = 0
+    activeBassChord = setChord(chords[chordNumber], 'bass')
+    activeLeadChord = setChord(chords[chordNumber], 'lead')
   }
   setActiveChords()
 
@@ -584,6 +647,8 @@ function init() {
   const offBeatHiHat = [131, 135, 139, 143]
   const snareOnTwoFour = [165, 173]
 
+  const synth1Line = [1, 35, 37, 55, 41, 27, 13, 31, 65, 83, 101, 119, 105, 91, 77, 95]
+
   const drumsPresets = [
     [129, 131, 133, 134, 135, 137, 138, 139, 140, 141, 143, 144, 165, 173, 177, 180, 181, 183, 187, 189],
     [129, 133, 137, 140, 147, 153, 156, 175, 177, 181, 185, 188, 191, 192]
@@ -631,7 +696,7 @@ function init() {
     }
   }
 
-  //* Mute an instrument
+
 
   function instrumentClassUpdate(className, action, instrument) {
     console.log('ins update')
@@ -654,7 +719,7 @@ function init() {
     }
   }
 
-
+  //* Mute an instrument
   function muteInstrument(event) {
     const instrument = event.target.classList.value
 
@@ -687,9 +752,9 @@ function init() {
         bassMuted = false
       }
     }
-
   }
 
+  presetPattern(synth1Line)
 }
 
 
