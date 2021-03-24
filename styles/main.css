@@ -97,11 +97,11 @@ h4 {
   margin: 2px;
 }
 
-.right-column {
+.tempo-box {
   border: 2px solid white;
   margin: 5px 45px;
   height: 262px;
-  height: 190px;
+  height: 185px;
   background-color: lightgrey;
   border-top: violet 12px solid;
   border-bottom: violet 12px solid;
@@ -141,8 +141,6 @@ h4 {
   background-color: yellow;
 }
 
-
-
 .knob::after {
     content: '';
     position: absolute;
@@ -177,6 +175,40 @@ h4 {
 .bass-filter-knob-wrapper {
   display: flex;
   flex-direction: column;
+}
+
+.notes-box {
+  background-color: lightgrey;
+  width: 120px;
+  color: black;
+  transition: 0.2s;
+}
+
+.violet {
+  background-color: violet;
+  transition: 0.2s;
+}
+
+.turquoise {
+  background-color: mediumturquoise;
+  transition: 0.2s;
+}
+
+.yellow {
+  background-color: yellow;
+  transition: 0.2s;
+}
+
+.notes-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.single-note-square {
+  width: 55px;
+  height: 55px;
+  font-size: 37px;
+  /* border: 1px solid white; */
 }
 
 button {

@@ -318,6 +318,11 @@ function init() {
   leadFilterWrapper.appendChild(leadSynthFilterCutoffKnob)
   leadSynthFilterCutoffKnob.classList.add('filter-knob', 'lead-filter')
 
+  const note1display = document.querySelector('.note1')
+  const note2display = document.querySelector('.note2')
+  const note3display = document.querySelector('.note3')
+  const note4display = document.querySelector('.note4')
+
 
   //* Notes
   const noteFrequencies = [
@@ -380,7 +385,6 @@ function init() {
     note4: null,
   }
 
-
   function setChord(chord, instrument) {
     let note1 = null
     let note2 = null
@@ -390,14 +394,13 @@ function init() {
     const bassChord = chord.map(noteName => {
       return `${noteName}3`
     })
-    
+
     //* To transpose the notes from octave 3 to 4:
     const leadChord = chord.map(noteName => {
       // return noteName.replace('3', '4')
       return `${noteName}4`
     })
-    
-    
+
     if (instrument === 'bass') {
       note1 = noteFrequencies.filter(note => {
         return note.name === bassChord[0]
@@ -444,24 +447,56 @@ function init() {
     ['D', 'G', 'A#', 'C'],
     ['D', 'F#', 'A', 'B'],
     ['B', 'D', 'F#', 'A'],
-    ['G#', 'B', 'D#', 'F#']
-
-    // ['D#3', ]
-
-
+    ['G#', 'B', 'D#', 'F#'],
+    ['G', 'B', 'D', 'F#'],
+    ['C', 'E', 'G', 'B'],
+    ['B', 'D#', 'F#', 'A#'],
+    ['G#', 'B', 'D#', 'F'],
+    ['F#', 'A#', 'C#', 'D#'],
+    ['C', 'F', 'G', 'A#'],
+    ['A#', 'D#', 'F', 'G#']
   ]
+
+  const noteColourThemes = ['violet', 'turquoise', 'violet', 'yellow', 'turquoise', 'violet', 'yellow']
+
+  function updateNoteColours() {
+    //* Chnages the order of the colour scheme:
+    noteColourThemes.unshift(noteColourThemes.pop())
+
+    function noteDisplayUpdate(note, themeNumber) {
+      note.classList.remove(noteColourThemes[0])
+      note.classList.remove(noteColourThemes[1])
+      note.classList.remove(noteColourThemes[2])
+      note.classList.remove(noteColourThemes[3])
+      note.classList.add(noteColourThemes[themeNumber])
+    }
+
+    noteDisplayUpdate(note1display, 2)
+    noteDisplayUpdate(note2display, 3)
+    noteDisplayUpdate(note3display, 1)
+    noteDisplayUpdate(note4display, 0)
+  }
+
+
 
   function setActiveChords() {
     const chordNumber = Math.floor(Math.random() * chords.length)
     // const chordNumber = 0
     activeBassChord = setChord(chords[chordNumber], 'bass')
     activeLeadChord = setChord(chords[chordNumber], 'lead')
+    note1display.innerText = `${chords[chordNumber][0]}`
+    note2display.innerText = `${chords[chordNumber][1]}`
+    note3display.innerText = `${chords[chordNumber][2]}`
+    note4display.innerText = `${chords[chordNumber][3]}`
+
   }
   setActiveChords()
+  updateNoteColours()
 
   //* On click, randomly update active chord
   function handleChangeNotes() {
     setActiveChords()
+    updateNoteColours()
   }
 
   //* Drums
