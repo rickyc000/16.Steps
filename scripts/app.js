@@ -2,6 +2,7 @@ function init() {
   console.log('Javascript is running')
 
   const tempoKnobWrapper = document.querySelector('.tempo-knob-wrapper')
+  const bassFilterWrapper = document.querySelector('.bass-filter-knob-wrapper')
 
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
@@ -62,10 +63,26 @@ function init() {
   lead2GainControl.connect(primaryGainControl)
 
   const bassGainControl = audioContext.createGain()
-  bassGainControl.gain.setValueAtTime(0.7, audioContext.currentTime)
+  bassGainControl.gain.setValueAtTime(0.5, audioContext.currentTime)
   bassGainControl.connect(primaryGainControl)
 
   let leadMuted = false
+
+  const leadFilter = audioContext.createBiquadFilter()
+  leadFilter.type = 'lowpass'
+  leadFilter.frequency.value = 10
+  leadFilter.Q.value = 20
+  leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
+  // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
+  leadFilter.connect(leadGainControl)
+
+  const leadFilter2 = audioContext.createBiquadFilter()
+  leadFilter2.type = 'bandpass'
+  leadFilter2.frequency.value = 100
+  leadFilter2.Q.value = 1
+  leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
+
+  leadFilter2.connect(lead2GainControl)
 
   //* SYNTH 1
   function playLead(freq) {
@@ -75,30 +92,11 @@ function init() {
       const synthOscillator = audioContext.createOscillator()
       const synthOscillator2 = audioContext.createOscillator()
 
-      //* OSC 1
-      const leadFilter = audioContext.createBiquadFilter()
-      leadFilter.type = 'lowpass'
-      leadFilter.frequency.value = 10
-      leadFilter.Q.value = 20
-      leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
-      // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
-      leadFilter.connect(leadGainControl)
-
       synthOscillator.frequency.setValueAtTime(freq, 0)
       synthOscillator.type = 'sawtooth'
       synthOscillator.connect(leadFilter)
       synthOscillator.start()
       synthOscillator.stop(audioContext.currentTime + 0.1)
-
-
-      //* OSC 2
-      const leadFilter2 = audioContext.createBiquadFilter()
-      leadFilter2.type = 'bandpass'
-      leadFilter2.frequency.value = 100
-      leadFilter2.Q.value = 1
-      leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
-
-      leadFilter2.connect(lead2GainControl)
 
       synthOscillator2.frequency.setValueAtTime(freq, 0)
       synthOscillator2.type = 'square'
@@ -110,20 +108,26 @@ function init() {
 
   let bassMuted = false
 
+  const bassFilter = audioContext.createBiquadFilter()
+  bassFilter.type = 'lowpass'
+  bassFilter.frequency.value = 1000
+  bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
+  bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
+  bassFilter.connect(bassGainControl)
+
+
   function playBass(freq) {
 
     if (bassMuted === false) {
 
       const synthOscillator = audioContext.createOscillator()
-      // const distortion = audioContext.createWaveShaper()
 
-      const bassFilter = audioContext.createBiquadFilter()
-      bassFilter.type = 'lowpass'
-      bassFilter.frequency.value = 1000
-      bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
-      bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
-      bassFilter.connect(bassGainControl)
-
+      // const bassFilter = audioContext.createBiquadFilter()
+      // bassFilter.type = 'lowpass'
+      // bassFilter.frequency.value = 1000
+      // bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
+      // bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
+      // bassFilter.connect(bassGainControl)
 
       synthOscillator.frequency.setValueAtTime(freq, 0)
       synthOscillator.type = 'sawtooth'
@@ -208,13 +212,10 @@ function init() {
     }
   }
 
-
-
   let timerId = null
   let playheadPosition = 0
   let isPlaying = false
-
-  let BPM = createKnob(80, 190)
+  let BPM = 135
 
   //* Timer
   function startTimer() {
@@ -224,34 +225,23 @@ function init() {
     }, (60000 / BPM) / 4)
   }
 
-  // //* Update knob value
-  function updateTempo(newBPM) {
-    console.log(newBPM + ' newBPM')
-    BPM = newBPM
-  }
-  updateTempo(135)
 
-  //* CREATE KNOB FUNCTION
 
-  
+  const tempoKnob = document.createElement('button')
+  // tempoKnob.classList = 'knob'
+  const bassSynthFilterCutoffKnob = document.createElement('button')
 
-  // console.log(tempoKnobWrapper)
 
-  function createKnob(min, max) {
-    const knob = document.createElement('button')
+  //* Create knob function
+  function createKnob(min, max, parameter, knob) {
     knob.classList = 'knob'
-    // knob.innerText = `${knobName}`
     let knobPosition = 0
     knob.style = `--percentage:${knobPosition}`
-    tempoKnobWrapper.appendChild(knob)
-
 
     let knobEngaged = false
     let previousY = null
     let knobPercentage = ((knobPosition + 50) / 290) * 100
-
     const range = max - min
-
     let value = (knobPercentage / 100 * range) + min
 
     //* Engages when clicked
@@ -290,7 +280,16 @@ function init() {
 
         //* Turn this value into a range between 80 / 200
         value = (knobPercentage / 100 * range) + min
-        updateTempo(value)
+
+        if (parameter === 'tempo') {
+          BPM = value
+        }
+        if (parameter === 'bassFilter') {
+          // leadFilter.frequency.value = value
+          // leadFilter2.frequency.value
+          // bassFilter.frequency.value = value
+          bassFilter.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.001)
+        }
       }
     }
 
@@ -304,9 +303,12 @@ function init() {
 
   //* END OF CREATE KNOB FUNCTION
 
+  createKnob(80, 190, 'tempo', tempoKnob)
+  tempoKnobWrapper.appendChild(tempoKnob)
 
-
-
+  createKnob(10, 5000, 'bassFilter', bassSynthFilterCutoffKnob)
+  bassFilterWrapper.appendChild(bassSynthFilterCutoffKnob)
+  bassSynthFilterCutoffKnob.classList.add('filter-knob')
 
 
   //* Notes
@@ -407,7 +409,7 @@ function init() {
     { name: 'kick' }
   ]
 
-  
+
 
   //* Grid variables
   const grid = document.querySelector('.grid')
