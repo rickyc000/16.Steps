@@ -692,8 +692,6 @@ function init() {
   const offBeatHiHat = [130, 134, 138, 142]
   const snareOnTwoFour = [164, 172]
 
-  // const synth1Line = [1, 35, 37, 55, 41, 27, 13, 31, 65, 83, 101, 119, 105, 91, 77, 95]
-
   const drumsPresets = [
     [128, 130, 132, 133, 134, 136, 137, 138, 139, 140, 142, 143, 164, 172, 176, 179, 180, 182, 186, 188],
     [128, 132, 136, 139, 146, 152, 155, 174, 176, 180, 184, 187, 190, 191],
@@ -709,12 +707,6 @@ function init() {
     [128, 140, 176, 180, 185, 189, 184, 186, 190, 132, 136],
     [180, 185, 130, 134, 176, 164, 183, 172, 188, 186, 140, 131, 138, 137, 142]
   ]
-
-  // const drumsUpdate = drumsPresets[1].map(cellNumber => {
-  //   return cellNumber - 1
-  // })
-
-  // console.log(drumsUpdate)
 
   const leadPresets = [
     [48, 37, 20, 18, 40, 42, 29],

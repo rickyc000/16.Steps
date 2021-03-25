@@ -320,3 +320,10 @@ div.active.on {
 div.muted {
   opacity: 50%;
 }
+
+
+.volume-box {
+  background-color: lightgrey;
+  width: 200px;
+  height: 200px;
+}
