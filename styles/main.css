@@ -179,9 +179,14 @@ h4 {
 
 .notes-box {
   background-color: lightgrey;
-  width: 120px;
+  width: 134px;
   color: black;
   transition: 0.2s;
+  border-top: mediumturquoise 12px solid;
+  border-bottom: mediumturquoise 12px solid;
+  border-right: violet 12px solid;
+  border-left: yellow 12px solid;
+  margin: 15px 45px;
 }
 
 .violet {
@@ -292,10 +297,12 @@ div.drums {
 div.active {
   background-color: lightblue;
   background-color: rgb(138, 247, 255);
+  /* background-color: white; */
 }
 
 div.on {
   background-color: rgb(157, 255, 118);
+  
 }
 
 div.on:hover {
@@ -307,6 +314,7 @@ div.active.on {
   background-color: rgb(255, 240, 107);
   /* border: 1px solid rgb(255, 251, 38); */
   /* transition: 0.1s; */
+  background-color:rgb(40, 228, 40);
 }
 
 div.muted {

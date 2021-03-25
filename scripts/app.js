@@ -460,7 +460,7 @@ function init() {
   const noteColourThemes = ['violet', 'turquoise', 'violet', 'yellow', 'turquoise', 'violet', 'yellow']
 
   function updateNoteColours() {
-    //* Chnages the order of the colour scheme:
+    //* Changes the order of the colour scheme:
     noteColourThemes.unshift(noteColourThemes.pop())
 
     function noteDisplayUpdate(note, themeNumber) {
@@ -478,7 +478,6 @@ function init() {
   }
 
 
-
   function setActiveChords() {
     const chordNumber = Math.floor(Math.random() * chords.length)
     // const chordNumber = 0
@@ -488,7 +487,6 @@ function init() {
     note2display.innerText = `${chords[chordNumber][1]}`
     note3display.innerText = `${chords[chordNumber][2]}`
     note4display.innerText = `${chords[chordNumber][3]}`
-
   }
   setActiveChords()
   updateNoteColours()
@@ -546,7 +544,8 @@ function init() {
   const muteDrumsButton = document.querySelector('.mute-drums')
   const muteLeadButton = document.querySelector('.mute-synth-1')
   const muteBassButton = document.querySelector('.mute-synth-2')
-
+  const leadChangePattern = document.querySelector('.new-lead-pattern')
+  const bassChangePattern = document.querySelector('.new-bass-pattern')
 
   //* Play sequence
   function handlePlay() {
@@ -626,15 +625,25 @@ function init() {
     }
   }
 
+  const activeCells = []
 
   //* Turn a STEP on or off
   function toggleStepOnOff(event) {
     const cellID = event.target.id - 1
     if (cells[cellID].classList.contains('on')) {
       cells[cellID].classList.remove('on')
+      
+      const index = activeCells.indexOf(cellID)
+      if (index > -1) {
+        activeCells.splice(index, 1)
+      }
+
     } else {
       cells[cellID].classList.add('on')
+      activeCells.push(cellID) 
     }
+
+    console.log(activeCells)
   }
 
   //* ROUTER SECTION
@@ -670,7 +679,8 @@ function init() {
   muteDrumsButton.addEventListener('click', muteInstrument)
   muteLeadButton.addEventListener('click', muteInstrument)
   muteBassButton.addEventListener('click', muteInstrument)
-
+  leadChangePattern.addEventListener('click', handleLeadChangePattern)
+  bassChangePattern.addEventListener('click', handleBassChangePattern)
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
@@ -678,22 +688,68 @@ function init() {
 
 
   //* Preset patterns
-  const fourToTheFloor = [177, 181, 185, 189]
-  const offBeatHiHat = [131, 135, 139, 143]
-  const snareOnTwoFour = [165, 173]
+  const fourToTheFloor = [176, 180, 184, 188]
+  const offBeatHiHat = [130, 134, 138, 142]
+  const snareOnTwoFour = [164, 172]
 
-  const synth1Line = [1, 35, 37, 55, 41, 27, 13, 31, 65, 83, 101, 119, 105, 91, 77, 95]
+  // const synth1Line = [1, 35, 37, 55, 41, 27, 13, 31, 65, 83, 101, 119, 105, 91, 77, 95]
 
   const drumsPresets = [
-    [129, 131, 133, 134, 135, 137, 138, 139, 140, 141, 143, 144, 165, 173, 177, 180, 181, 183, 187, 189],
-    [129, 133, 137, 140, 147, 153, 156, 175, 177, 181, 185, 188, 191, 192]
+    [128, 130, 132, 133, 134, 136, 137, 138, 139, 140, 142, 143, 164, 172, 176, 179, 180, 182, 186, 188],
+    [128, 132, 136, 139, 146, 152, 155, 174, 176, 180, 184, 187, 190, 191],
+    [176, 128, 129, 130, 131, 164, 180, 184, 172, 188, 136, 137, 138, 139, 158, 142],
+    [176, 128, 131, 132, 179, 180, 164, 183, 185, 184, 188, 172, 187, 135, 136, 137, 139, 138, 140, 158, 130],
+    [176, 180, 184, 185, 188, 128, 129, 130, 132, 133, 134, 137, 138, 140, 141, 142, 136, 143],
+    [128, 129, 130, 132, 133, 134, 137, 138, 140, 141, 142, 136, 143, 164, 172],
+    [134, 141, 176, 168, 128, 130, 132, 136, 181, 184, 138, 142, 140, 139, 143, 156],
+    [134, 141, 176, 128, 130, 132, 136, 138, 142, 140, 139, 143, 156, 164, 180, 172, 188, 184, 135],
+    [134, 141, 176, 128, 130, 132, 136, 138, 142, 140, 139, 143, 156, 135, 179, 164, 180, 183, 184, 188, 172, 186, 131, 129],
+    [141, 176, 142, 139, 143, 164, 183, 186, 172],
+    [164, 172, 186, 128, 130, 132, 131, 140, 176],
+    [128, 140, 176, 180, 185, 189, 184, 186, 190, 132, 136],
+    [180, 185, 130, 134, 176, 164, 183, 172, 188, 186, 140, 131, 138, 137, 142]
   ]
 
+  // const drumsUpdate = drumsPresets[1].map(cellNumber => {
+  //   return cellNumber - 1
+  // })
 
+  // console.log(drumsUpdate)
+
+  const leadPresets = [
+    [48, 37, 20, 18, 40, 42, 29],
+    [22, 3, 42, 27, 14],
+    [16, 17, 18, 19, 39, 26, 27, 28, 29],
+    [32, 33, 37, 38, 23, 43, 28, 10, 2],
+    [1, 5, 8, 25, 42, 59],
+    [32, 22, 28],
+    [36, 5, 40, 9, 44, 13, 30],
+    [48, 43, 29, 57, 20],
+    [0, 1, 2, 3, 20, 37, 54],
+    [48, 5, 33, 24, 30, 44],
+    [0, 8, 44, 36, 37],
+    [36, 30, 18, 54, 24, 42, 60],
+    [18, 27, 20, 24],
+    [48, 55, 60, 33, 35, 20, 22, 25, 40, 43, 14, 45]
+  ]
+
+  const bassPresets = [
+    [106, 80, 99, 88, 93],
+    [112, 98, 100, 120, 106, 108, 94],
+    [80, 66, 68, 71, 106, 77, 111, 126],
+    [112, 118, 90],
+    [83, 118, 96],
+    [64, 84, 72, 93, 75],
+    [113, 99, 114, 84, 103, 88, 108, 93],
+    [64, 66, 67, 72],
+    [80, 86, 92],
+    [98, 101, 90, 92],
+    [98, 64, 70, 104]
+  ]
 
   function presetPattern(cellsToAdd) {
     cellsToAdd.map(cell => {
-      cells[cell - 1].classList.add('on')
+      cells[cell].classList.add('on')
     })
   }
 
@@ -731,10 +787,20 @@ function init() {
     }
   }
 
+  function handleLeadChangePattern() {
+    clearCells('lead')
+    presetPattern(leadPresets[Math.floor(Math.random() * leadPresets.length)])
+  }
+
+  function handleBassChangePattern() {
+    clearCells('bass')
+    console.log('bass change')
+    presetPattern(bassPresets[Math.floor(Math.random() * bassPresets.length)])
+  }
+
 
 
   function instrumentClassUpdate(className, action, instrument) {
-    console.log('ins update')
 
     if (action === 'add') {
       for (let i = 0; i < cells.length; i++) {
@@ -789,7 +855,7 @@ function init() {
     }
   }
 
-  presetPattern(synth1Line)
+//   presetPattern(synth1Line)
 }
 
 
