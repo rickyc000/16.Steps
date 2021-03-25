@@ -40,15 +40,15 @@ h1, h4 {
 
 
 
-.about {
+.about-wrapper {
   /* width: 60px;
   height: 60px; */
   cursor: pointer;
   color: black;
   border: 3px solid white;
-  padding: 5px;
-  max-width: 70px;
-  max-height: 70px;
+  padding: 2px 6px;
+  max-width: 65px;
+  max-height: 65px;
   width: 80px;
   height: 80px;
   /* border-radius: 100%; */
@@ -59,17 +59,33 @@ h1, h4 {
   font-size: 40px;
   transition: all 0.5s;
   border: 7px mediumturquoise solid;
+  border: 7px mediumturquoise solid;
+
+  border-left: 7px yellow solid;
+  border-right: 7px yellow solid;
   /* box-shadow: 4px 5px yellow; */
  /* background-color: rgb(138, 138, 138); */
 }
 
-.about.open {
+.about-wrapper.open {
   max-width: 400px;
   max-height: 400px;
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
   transition: all .5s;
   border-radius: 0;
+}
+
+.about-content {
+  display: none;
+  transition: 0.5s;
+}
+
+.about-content.open {
+  display: flex;
+  transition: 0.5s;
+  font-size: 20px;
+  text-transform: none;
 }
 
 .grid-column {
@@ -77,6 +93,9 @@ h1, h4 {
   flex-direction: column;
 }
 
+.about.open {
+  display: none;
+}
 /* .left-column,
 .right-column {
   width: 100%;
@@ -96,7 +115,7 @@ h1, h4 {
   color: black;
   width: 300px;
   /* margin-left: 6vw; */
-  margin: 6px 35px 5px 35px;
+  margin: 6px 30px 5px 35px;
   box-shadow: 2px 3px lightgrey;
 }
 
@@ -116,7 +135,7 @@ h4 {
 
 .tempo-box {
   border: 2px solid white;
-  margin: 5px 45px;
+  margin: 5px 30px;
   height: 262px;
   height: 185px;
   background-color: lightgrey;
@@ -203,7 +222,7 @@ h4 {
   border-bottom: mediumturquoise 12px solid;
   border-right: violet 12px solid;
   border-left: yellow 12px solid;
-  margin: 15px 45px;
+  margin: 15px 30px;
 }
 
 .violet {

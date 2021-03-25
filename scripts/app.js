@@ -5,8 +5,11 @@ function init() {
   const bassFilterWrapper = document.querySelector('.bass-filter-knob-wrapper')
   const leadFilterWrapper = document.querySelector('.lead-filter-knob-wrapper')
   const volumeKnobWrapper = document.querySelector('.volume-knob-wrapper')
-  const aboutIcon = document.querySelector('.about')
+  const aboutWrapper = document.querySelector('.about-wrapper')
+  const aboutContent = document.querySelector('.about-content')
+  const about = document.querySelector('.about')
 
+  console.log(about)
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
     1,
@@ -121,14 +124,6 @@ function init() {
     if (bassMuted === false) {
 
       const synthOscillator = audioContext.createOscillator()
-
-      // const bassFilter = audioContext.createBiquadFilter()
-      // bassFilter.type = 'lowpass'
-      // bassFilter.frequency.value = 1000
-      // bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
-      // bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
-      // bassFilter.connect(bassGainControl)
-
       synthOscillator.frequency.setValueAtTime(freq, 0)
       synthOscillator.type = 'sawtooth'
       synthOscillator.connect(bassFilter)
@@ -324,7 +319,7 @@ function init() {
   leadFilterWrapper.appendChild(leadSynthFilterCutoffKnob)
   leadSynthFilterCutoffKnob.classList.add('filter-knob', 'lead-filter')
 
-  createKnob(0, 0.9, 'mainVolume', mainVolumeGain)
+  createKnob(0.01, 0.9, 'mainVolume', mainVolumeGain)
   volumeKnobWrapper.appendChild(mainVolumeGain)
 
   const note1display = document.querySelector('.note1')
@@ -681,10 +676,14 @@ function init() {
     
 
     if (aboutIsOpen === false) {
-      aboutIcon.classList.add('open')
+      aboutWrapper.classList.add('open')
+      aboutContent.classList.add('open')
+      about.classList.add('open')
       aboutIsOpen = true
     } else {
-      aboutIcon.classList.remove('open')
+      aboutWrapper.classList.remove('open')
+      aboutContent.classList.remove('open')
+      about.classList.remove('open')
       aboutIsOpen = false
     }
     // aboutIcon.classList.add('open')
@@ -707,7 +706,7 @@ function init() {
   muteBassButton.addEventListener('click', muteInstrument)
   leadChangePattern.addEventListener('click', handleLeadChangePattern)
   bassChangePattern.addEventListener('click', handleBassChangePattern)
-  aboutIcon.addEventListener('click', openAboutSection)
+  aboutWrapper.addEventListener('click', openAboutSection)
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
