@@ -4,6 +4,8 @@ function init() {
   const tempoKnobWrapper = document.querySelector('.tempo-knob-wrapper')
   const bassFilterWrapper = document.querySelector('.bass-filter-knob-wrapper')
   const leadFilterWrapper = document.querySelector('.lead-filter-knob-wrapper')
+  const volumeKnobWrapper = document.querySelector('.volume-knob-wrapper')
+  const aboutIcon = document.querySelector('.about')
 
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
@@ -24,8 +26,8 @@ function init() {
   primaryGainControl.connect(audioContext.destination)
 
   const kickGainControl = audioContext.createGain()
-  kickGainControl.gain.setValueAtTime(1, audioContext.currentTime)
-  kickGainControl.connect(audioContext.destination)
+  kickGainControl.gain.setValueAtTime(0.45, audioContext.currentTime)
+  kickGainControl.connect(primaryGainControl)
 
   const kickFilter = audioContext.createBiquadFilter()
   kickFilter.type = 'lowpass'
@@ -230,6 +232,7 @@ function init() {
   const tempoKnob = document.createElement('button')
   const bassSynthFilterCutoffKnob = document.createElement('button')
   const leadSynthFilterCutoffKnob = document.createElement('button')
+  const mainVolumeGain = document.createElement('button')
 
 
   //* Create knob function
@@ -294,6 +297,9 @@ function init() {
           // leadFilter2.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.05)
           // leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
         }
+        if (parameter === 'mainVolume') {
+          primaryGainControl.gain.value = value
+        }
       }
     }
 
@@ -317,6 +323,9 @@ function init() {
   createKnob(10, 5000, 'leadFilter', leadSynthFilterCutoffKnob)
   leadFilterWrapper.appendChild(leadSynthFilterCutoffKnob)
   leadSynthFilterCutoffKnob.classList.add('filter-knob', 'lead-filter')
+
+  createKnob(0, 0.9, 'mainVolume', mainVolumeGain)
+  volumeKnobWrapper.appendChild(mainVolumeGain)
 
   const note1display = document.querySelector('.note1')
   const note2display = document.querySelector('.note2')
@@ -506,7 +515,6 @@ function init() {
   ]
 
 
-
   //* Grid variables
   const grid = document.querySelector('.grid')
   const steps = 16
@@ -665,6 +673,24 @@ function init() {
     }
   }
 
+  //* Open About content
+
+  let aboutIsOpen = false
+
+  function openAboutSection() {
+    
+
+    if (aboutIsOpen === false) {
+      aboutIcon.classList.add('open')
+      aboutIsOpen = true
+    } else {
+      aboutIcon.classList.remove('open')
+      aboutIsOpen = false
+    }
+    // aboutIcon.classList.add('open')
+    console.log(aboutIsOpen)
+  }
+
   //* Event listeners
   playButton.addEventListener('click', handlePlay)
   clearGridButton.addEventListener('click', handleClearGrid)
@@ -681,6 +707,7 @@ function init() {
   muteBassButton.addEventListener('click', muteInstrument)
   leadChangePattern.addEventListener('click', handleLeadChangePattern)
   bassChangePattern.addEventListener('click', handleBassChangePattern)
+  aboutIcon.addEventListener('click', openAboutSection)
 
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
