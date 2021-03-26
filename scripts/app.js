@@ -25,7 +25,7 @@ function init() {
   }
 
   const primaryGainControl = audioContext.createGain()
-  primaryGainControl.gain.setValueAtTime(1, 0)
+  primaryGainControl.gain.setValueAtTime(0.45, 0)
   primaryGainControl.connect(audioContext.destination)
 
   const kickGainControl = audioContext.createGain()
@@ -57,34 +57,35 @@ function init() {
   clapFilter.connect(primaryGainControl)
 
   const leadGainControl = audioContext.createGain()
-  leadGainControl.gain.value = 0.3
+  leadGainControl.gain.value = 0.15
   leadGainControl.connect(primaryGainControl)
 
-  const lead2GainControl = audioContext.createGain()
-  lead2GainControl.gain.setValueAtTime(0.3, audioContext.currentTime)
-  lead2GainControl.connect(primaryGainControl)
-
   const bassGainControl = audioContext.createGain()
-  bassGainControl.gain.setValueAtTime(0.5, audioContext.currentTime)
+  bassGainControl.gain.setValueAtTime(0.6, audioContext.currentTime)
   bassGainControl.connect(primaryGainControl)
 
   let leadMuted = false
 
-  const leadFilter = audioContext.createBiquadFilter()
+  const leadThroughFilter = audioContext.createBiquadFilter() 
+  leadThroughFilter.type = 'lowpass'
+  leadThroughFilter.Q.value = 15 
+  leadThroughFilter.frequency.value = 5000
+  leadThroughFilter.frequency.setValueAtTime(20000, audioContext.currentTime + 0.001)
+  // leadThroughFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.2)
+  // leadThroughFilter.frequency.setValueAtTime(5000, audioContext.currentTime + 0.2)
+  leadThroughFilter.connect(leadGainControl)
+
+  const leadFilter = audioContext.createBiquadFilter() 
   leadFilter.type = 'lowpass'
-  // leadFilter.frequency.value = 10
   leadFilter.Q.value = 10
-  // leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
-  // leadFilter.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.06)
-  leadFilter.connect(leadGainControl)
+  leadFilter.frequency.exponentialRampToValueAtTime(2045, audioContext.currentTime + 0.01)
+  leadFilter.connect(leadThroughFilter)
 
-  const leadFilter2 = audioContext.createBiquadFilter()
-  leadFilter2.type = 'bandpass'
-  // leadFilter2.frequency.value = 100
-  leadFilter2.Q.value = 1
-  // leadFilter2.frequency.exponentialRampToValueAtTime(3000, audioContext.currentTime + 0.05)
-
-  leadFilter2.connect(lead2GainControl)
+  // const leadFilter2 = audioContext.createBiquadFilter()
+  // leadFilter2.type = 'bandpass'
+  // leadFilter2.Q.value = 1
+  // leadFilter2.frequency.exponentialRampToValueAtTime(5000, audioContext.currentTime + 0.05)
+  // leadFilter2.connect(leadThroughFilter)
 
   //* SYNTH 1
   function playLead(freq) {
@@ -102,7 +103,7 @@ function init() {
 
       synthOscillator2.frequency.setValueAtTime(freq, 0)
       synthOscillator2.type = 'square'
-      synthOscillator2.connect(leadFilter2)
+      synthOscillator2.connect(leadFilter)
       synthOscillator2.start(audioContext.currentTime + 0.03)
       synthOscillator2.stop(audioContext.currentTime + 0.125)
     }
@@ -114,9 +115,9 @@ function init() {
 
   const bassFilter = audioContext.createBiquadFilter()
   bassFilter.type = 'lowpass'
-  bassFilter.frequency.value = 1000
-  bassFilter.frequency.exponentialRampToValueAtTime(10000, audioContext.currentTime + 0.001)
-  bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
+  bassFilter.frequency.value = 2045
+  bassFilter.frequency.exponentialRampToValueAtTime(2045, audioContext.currentTime + 0.001)
+  // bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
   bassFilter.connect(bassGainControl)
 
   function playBass(freq) {
@@ -128,7 +129,7 @@ function init() {
       synthOscillator.type = 'sawtooth'
       synthOscillator.connect(bassFilter)
       synthOscillator.start()
-      synthOscillator.stop(audioContext.currentTime + 0.2)
+      synthOscillator.stop(audioContext.currentTime + 0.15)
     }
 
   }
@@ -209,18 +210,7 @@ function init() {
     }
   }
 
-  let timerId = null
-  let playheadPosition = 0
-  let isPlaying = false
-  let BPM = 135
 
-  //* Timer
-  function startTimer() {
-    timerId = setTimeout(() => {
-      movePlayhead()
-      startTimer()
-    }, (60000 / BPM) / 4)
-  }
 
 
 
@@ -281,16 +271,14 @@ function init() {
 
         if (parameter === 'tempo') {
           BPM = value
+          
         }
         if (parameter === 'bassFilter') {
-          bassFilter.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.001)
+          bassFilter.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.2)
         }
         if (parameter === 'leadFilter') {
-          // console.log(value + 'value')
           leadFilter.frequency.value = value
-          leadFilter2.frequency.value = value
-          // leadFilter2.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.05)
-          // leadFilter.frequency.exponentialRampToValueAtTime(2000, audioContext.currentTime + 0.01)
+          // leadFilter2.frequency.value = value
         }
         if (parameter === 'mainVolume') {
           primaryGainControl.gain.value = value
@@ -303,12 +291,12 @@ function init() {
     window.addEventListener('mousemove', event => {
       rotaryMove(event.clientY)
     })
-    return value
+    return value - 50
   }
 
   //* END OF CREATE KNOB FUNCTION
 
-  createKnob(80, 190, 'tempo', tempoKnob)
+  // createKnob(80, 190, 'tempo', tempoKnob, 0)
   tempoKnobWrapper.appendChild(tempoKnob)
 
   createKnob(10, 5000, 'bassFilter', bassSynthFilterCutoffKnob)
@@ -327,6 +315,20 @@ function init() {
   const note3display = document.querySelector('.note3')
   const note4display = document.querySelector('.note4')
 
+  let timerId = null
+  let playheadPosition = 0
+  let isPlaying = false
+  let BPM = 135 
+  // createKnob(80, 190, 'tempo', tempoKnob, 0)
+  console.log(createKnob(80, 190, 'tempo', tempoKnob, 0))
+
+  //* Timer
+  function startTimer() {
+    timerId = setTimeout(() => {
+      movePlayhead()
+      startTimer()
+    }, (60000 / BPM) / 4)
+  }
 
   //* Notes
   const noteFrequencies = [
@@ -357,22 +359,6 @@ function init() {
     { name: 'A#4', frequency: 466.16 },
     { name: 'B4', frequency: 493.88 }
   ]
-
-  // const leadNotes = [
-  //   //* Lead octave
-  //   { name: 'C4', frequency: 261.63 },
-  //   { name: 'C#4', frequency: 277.18 },
-  //   { name: 'D4', frequency: 293.66 },
-  //   { name: 'D#4', frequency: 311.13 },
-  //   { name: 'E4', frequency: 329.63 },
-  //   { name: 'F4', frequency: 349.23 },
-  //   { name: 'F#4', frequency: 369.99 },
-  //   { name: 'G4', frequency: 392.0 },
-  //   { name: 'G#4', frequency: 415.3 },
-  //   { name: 'A4', frequency: 440.0 },
-  //   { name: 'A#4', frequency: 466.16 },
-  //   { name: 'B4', frequency: 493.88 }
-  // ]
 
 
   let activeLeadChord = {
@@ -604,7 +590,6 @@ function init() {
       }
     }
   }
-
 
 
   //* Move playhead
