@@ -22,7 +22,7 @@
       <div class="about">?</div>
       <p class="about-content">
         16.Steps is a digital synthesizer/sequencer created by Ricky Cato.
-          <!-- <a href="https://rickycato.com" target="_blank">Ricky Cato</a>. -->
+        <!-- <a href="https://rickycato.com" target="_blank">Ricky Cato</a>. -->
         Click the grid squares to toggle them on/off and hit play to start the sequence.
         More infomation.
       </p>
@@ -30,7 +30,7 @@
   </header>
 
 
-  <div class="grid-section">
+  <main class="grid-section">
     <div class="left-column column">
       <div class="lead-synth-controls">
         <h4>Synth 1</h4>
@@ -87,7 +87,11 @@
           Mute
         </button>
       </div>
-
+      <div class="clear-grid-wrapper">
+        <button class="clear-grid-button">
+          Clear grid
+        </button>
+      </div>
     </div>
     <div class="grid-column">
       <div class="grid">
@@ -116,35 +120,26 @@
           <div class="single-note-square note4"></div>
         </div>
         <button class="change-notes-button">
-          Change notes
+          Change
         </button>
       </div>
 
-
-
-
     </div>
-  </div>
+  </main>
 
-  <div class="control-bar">
-    <div>
-
-      <button class="clear-grid-button">
-        Clear grid
-      </button>
-      <div class="volume-box">
-        <h4 class="volume-heading">Volume</h4>
-        <div class="volume-knob-wrapper">
-        </div>
-        <div class="fast-slow-wrapper">
-          <p class="loud-quiet">Quiet</p>
-          <p class="loud-quiet">Loud</p>
-        </div>
+  <footer class="volume-section">
+    <div class="volume-box">
+      <h4 class="volume-heading">Volume</h4>
+      <div class="volume-knob-wrapper">
       </div>
-
-
+      <div class="loud-quiet-wrapper">
+        <p class="loud-quiet">Quiet</p>
+        <p class="loud-quiet">Loud</p>
+      </div>
     </div>
-  </div>
+  </footer>
+
+
 </body>
 
 </html>
