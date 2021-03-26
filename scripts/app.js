@@ -29,7 +29,7 @@ function init() {
   primaryGainControl.connect(audioContext.destination)
 
   const kickGainControl = audioContext.createGain()
-  kickGainControl.gain.setValueAtTime(0.45, audioContext.currentTime)
+  kickGainControl.gain.setValueAtTime(0.75, audioContext.currentTime)
   kickGainControl.connect(primaryGainControl)
 
   const kickFilter = audioContext.createBiquadFilter()
@@ -43,7 +43,7 @@ function init() {
 
   const snareFilter = audioContext.createBiquadFilter()
   snareFilter.type = 'highpass'
-  snareFilter.frequency.value = 1000
+  snareFilter.frequency.value = 750
   snareFilter.connect(primaryGainControl)
 
   const hatFilter = audioContext.createBiquadFilter()
@@ -57,11 +57,11 @@ function init() {
   clapFilter.connect(primaryGainControl)
 
   const leadGainControl = audioContext.createGain()
-  leadGainControl.gain.value = 0.15
+  leadGainControl.gain.value = 0.2
   leadGainControl.connect(primaryGainControl)
 
   const bassGainControl = audioContext.createGain()
-  bassGainControl.gain.setValueAtTime(0.6, audioContext.currentTime)
+  bassGainControl.gain.setValueAtTime(0.7, audioContext.currentTime)
   bassGainControl.connect(primaryGainControl)
 
   let leadMuted = false
@@ -309,6 +309,7 @@ function init() {
 
   createKnob(0.01, 0.9, 'mainVolume', mainVolumeGain)
   volumeKnobWrapper.appendChild(mainVolumeGain)
+  mainVolumeGain.classList.add('volume-knob')
 
   const note1display = document.querySelector('.note1')
   const note2display = document.querySelector('.note2')
