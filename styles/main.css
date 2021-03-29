@@ -70,7 +70,6 @@ h1, h4 {
 }
 
 .close-window {
-  /* background-color: blue; */
   display: flex;
   justify-content: flex-end;
   margin: 0;
@@ -128,7 +127,7 @@ h1, h4 {
   height: 127px;
   /* height: 100px; */
   color: black;
-  width: 300px;
+  width: 270px;
   /* margin-left: 6vw; */
   margin: 6px 20px 5px 35px;
   box-shadow: 2px 3px lightgrey;
@@ -140,7 +139,15 @@ h1, h4 {
 
 .bass-synth-controls {
   background-color: yellow;
+}
 
+.bass-synth-controls-section-wrapper {
+  background-color: yellow;
+  display: flex;
+}
+
+.lead-synth-controls-section-wrapper {
+  display: flex;
 }
 
 .clear-grid-wrapper {
@@ -197,12 +204,23 @@ h4 {
 }
 
 .filter-knob {
-  height: 40px;
-  width: 40px;
+  height: 60px;
+  width: 60px;
+}
+
+.filter-label {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .lead-filter {
   background-color: yellow;
+}
+
+.bass-filter-knob-wrapper,
+.lead-filter-knob-wrapper {
+  margin: 5px;
 }
 
 .knob::after {
@@ -304,7 +322,7 @@ button {
   padding: 4px;
   cursor: pointer;
   outline: none;
-  margin: 2px;
+  margin: 2px 4px;
 
 }
 

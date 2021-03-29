@@ -831,9 +831,11 @@ function init() {
     if (instrument === 'mute-drums') {
       if (drumsMuted === false) {
         instrumentClassUpdate('muted', 'add', 'drums')
+        muteDrumsButton.innerText = 'Mute Off'
         drumsMuted = true
       } else {
         instrumentClassUpdate('muted', 'remove', 'drums')
+        muteDrumsButton.innerText = 'Mute On'
         drumsMuted = false
       }
     }
@@ -841,9 +843,11 @@ function init() {
     if (instrument === 'mute-synth-1') {
       if (leadMuted === false) {
         instrumentClassUpdate('muted', 'add', 'lead')
+        muteLeadButton.innerText = 'Mute Off'
         leadMuted = true
       } else {
         instrumentClassUpdate('muted', 'remove', 'lead')
+        muteLeadButton.innerText = 'Mute On'
         leadMuted = false
       }
     }
@@ -851,9 +855,11 @@ function init() {
     if (instrument === 'mute-synth-2') {
       if (bassMuted === false) {
         instrumentClassUpdate('muted', 'add', 'bass')
+        muteBassButton.innerText = 'Mute Off'
         bassMuted = true
       } else {
         instrumentClassUpdate('muted', 'remove', 'bass')
+        muteBassButton.innerText = 'Mute On'
         bassMuted = false
       }
     }
