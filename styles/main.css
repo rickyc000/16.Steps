@@ -261,7 +261,7 @@ h4 {
 
 .notes-box {
   background-color: lightgrey;
-  width: 134px;
+  width: 154px;
   color: black;
   transition: 0.2s;
   border-top: mediumturquoise 12px solid;
@@ -296,11 +296,13 @@ h4 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
 }
 
 .single-note-square {
-  width: 55px;
-  height: 55px;
+  width: 65px;
+  height: 64px;
+  flex-grow: 1;
   font-size: 37px;
   display: flex;
   justify-content: center;
@@ -319,11 +321,12 @@ button {
   color: white;
   background-color: black;
   font-size: 12px;
-  padding: 4px;
+  padding: 4px 6px;
   cursor: pointer;
   outline: none;
   margin: 2px 4px;
-
+  /* padding: 2px; */
+  /* width: 100%; */
 }
 
 .grid {
