@@ -1,3 +1,3 @@
-# Drum Machine
+# 16.Steps
 
-Work in progress - a 16-step JavaScript sequencer
+https://rickyc000.github.io/16.Steps/
