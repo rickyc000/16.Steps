@@ -17,7 +17,6 @@ function init() {
   )
 
   const channelData = buffer.getChannelData(0)
-
   for (let i = 0; i < buffer.length; i++) {
     channelData[i] = Math.random() * 2 - 1
   }
@@ -119,25 +118,25 @@ function init() {
       synthOscillator.start()
       synthOscillator.stop(audioContext.currentTime + 0.15)
     }
-
   }
-  let drumsMuted = false
 
   //* Drums
+  let drumsMuted = false
+
   function playDrums(note) {
 
     if (drumsMuted === false) {
 
       if (note === 'kick') {
-        const synthOscillator = audioContext.createOscillator()
-        synthOscillator.frequency.exponentialRampToValueAtTime(
+        const kickOscillator = audioContext.createOscillator()
+        kickOscillator.frequency.exponentialRampToValueAtTime(
           0.2,
           audioContext.currentTime + 0.2
         )
-        synthOscillator.type = 'sine'
-        synthOscillator.connect(kickFilter)
-        synthOscillator.start()
-        synthOscillator.stop(audioContext.currentTime + 0.5)
+        kickOscillator.type = 'sine'
+        kickOscillator.connect(kickFilter)
+        kickOscillator.start()
+        kickOscillator.stop(audioContext.currentTime + 0.5)
       }
 
       if (note === 'snare') {
@@ -251,6 +250,7 @@ function init() {
         //* Turn this value into a range between 80 / 200
         value = (knobPercentage / 100 * range) + min
 
+        //* Updates depending on which parameter is set:
         if (parameter === 'tempo') {
           BPM = value   
         }

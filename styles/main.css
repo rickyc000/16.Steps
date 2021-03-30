@@ -231,9 +231,6 @@ h4 {
     background: yellow;
     left: 50%;
     top: 10%;
-    /* margin: 0 0 0 -1px; */
-    /* transform-origin: 100% 200%;  */
-    /* transform: rotate(180deg); */
   }
 
   .filter-knob::after {
@@ -247,7 +244,6 @@ h4 {
 .fast-slow-wrapper {
   display: flex;
   color: black;
-  /* margin: 10px; */
 }
 
 .fast-slow {
@@ -307,7 +303,6 @@ h4 {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* border: 1px solid white; */
 }
 
 .change-notes-button {
@@ -325,8 +320,6 @@ button {
   cursor: pointer;
   outline: none;
   margin: 2px 4px;
-  /* padding: 2px; */
-  /* width: 100%; */
 }
 
 .grid {
@@ -335,7 +328,6 @@ button {
   height: 391px;
   width: 525px;
   margin: 5px;
-  /* box-shadow: 2px 3px lightgrey; */
 }
 
 
@@ -353,9 +345,6 @@ button {
   transition: 0.2s;
 }
 
-
-
-
 .play-button {
   margin: 5px;
   width: 160px;
@@ -364,7 +353,6 @@ button {
   transition: 0.2s;
   width: 525px;
   box-shadow: 2px 3px lightgrey;
-  /* justify-self: flex-start; */
 }
 
 .play-button:hover {
@@ -398,7 +386,6 @@ div.drums {
 div.active {
   background-color: lightblue;
   background-color: rgb(138, 247, 255);
-  /* background-color: white; */
 }
 
 div.on {
@@ -413,8 +400,6 @@ div.on:hover {
 div.active.on {
   background-color: rgb(255, 251, 38);
   background-color: rgb(255, 240, 107);
-  /* border: 1px solid rgb(255, 251, 38); */
-  /* transition: 0.1s; */
   background-color:rgb(40, 228, 40);
 }
 
