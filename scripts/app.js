@@ -9,7 +9,6 @@ function init() {
   const aboutContent = document.querySelector('.about-content')
   const about = document.querySelector('.about')
 
-  console.log(about)
   const audioContext = new AudioContext()
   const buffer = audioContext.createBuffer(
     1,
@@ -18,7 +17,6 @@ function init() {
   )
 
   const channelData = buffer.getChannelData(0)
-  console.log(channelData.length)
 
   for (let i = 0; i < buffer.length; i++) {
     channelData[i] = Math.random() * 2 - 1
@@ -71,8 +69,6 @@ function init() {
   leadThroughFilter.Q.value = 15 
   leadThroughFilter.frequency.value = 5000
   leadThroughFilter.frequency.setValueAtTime(20000, audioContext.currentTime + 0.001)
-  // leadThroughFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.2)
-  // leadThroughFilter.frequency.setValueAtTime(5000, audioContext.currentTime + 0.2)
   leadThroughFilter.connect(leadGainControl)
 
   const leadFilter = audioContext.createBiquadFilter() 
@@ -81,13 +77,7 @@ function init() {
   leadFilter.frequency.exponentialRampToValueAtTime(2045, audioContext.currentTime + 0.01)
   leadFilter.connect(leadThroughFilter)
 
-  // const leadFilter2 = audioContext.createBiquadFilter()
-  // leadFilter2.type = 'bandpass'
-  // leadFilter2.Q.value = 1
-  // leadFilter2.frequency.exponentialRampToValueAtTime(5000, audioContext.currentTime + 0.05)
-  // leadFilter2.connect(leadThroughFilter)
-
-  //* SYNTH 1
+  //* Synth 1
   function playLead(freq) {
 
     if (leadMuted === false) {
@@ -109,15 +99,13 @@ function init() {
     }
   }
 
-
-  //* BASS SYNTH
+  //* Synth 2
   let bassMuted = false
 
   const bassFilter = audioContext.createBiquadFilter()
   bassFilter.type = 'lowpass'
   bassFilter.frequency.value = 2045
   bassFilter.frequency.exponentialRampToValueAtTime(2045, audioContext.currentTime + 0.001)
-  // bassFilter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.125)
   bassFilter.connect(bassGainControl)
 
   function playBass(freq) {
@@ -135,8 +123,7 @@ function init() {
   }
   let drumsMuted = false
 
-  //* DRUMS
-
+  //* Drums
   function playDrums(note) {
 
     if (drumsMuted === false) {
@@ -210,15 +197,11 @@ function init() {
     }
   }
 
-
-
-
-
+  //* Knobs
   const tempoKnob = document.createElement('button')
   const bassSynthFilterCutoffKnob = document.createElement('button')
   const leadSynthFilterCutoffKnob = document.createElement('button')
   const mainVolumeGain = document.createElement('button')
-
 
   //* Create knob function
   function createKnob(min, max, parameter, knob) {
@@ -264,21 +247,18 @@ function init() {
 
         //* Turns the value into a percentage
         knobPercentage = ((knobPosition + 145) / 290) * 100
-        console.log(knobPercentage + '%')
 
         //* Turn this value into a range between 80 / 200
         value = (knobPercentage / 100 * range) + min
 
         if (parameter === 'tempo') {
-          BPM = value
-          
+          BPM = value   
         }
         if (parameter === 'bassFilter') {
           bassFilter.frequency.exponentialRampToValueAtTime(value, audioContext.currentTime + 0.2)
         }
         if (parameter === 'leadFilter') {
           leadFilter.frequency.value = value
-          // leadFilter2.frequency.value = value
         }
         if (parameter === 'mainVolume') {
           primaryGainControl.gain.value = value
@@ -294,9 +274,8 @@ function init() {
     return value - 50
   }
 
-  //* END OF CREATE KNOB FUNCTION
+  //* Create and append knobs
 
-  // createKnob(80, 190, 'tempo', tempoKnob, 0)
   tempoKnobWrapper.appendChild(tempoKnob)
 
   createKnob(10, 5000, 'bassFilter', bassSynthFilterCutoffKnob)
@@ -320,8 +299,8 @@ function init() {
   let playheadPosition = 0
   let isPlaying = false
   let BPM = 135 
-  // createKnob(80, 190, 'tempo', tempoKnob, 0)
-  console.log(createKnob(80, 190, 'tempo', tempoKnob, 0))
+
+  createKnob(80, 190, 'tempo', tempoKnob, 0)
 
   //* Timer
   function startTimer() {
@@ -347,6 +326,7 @@ function init() {
     { name: 'A#3', frequency: 233.08 },
     { name: 'B3', frequency: 246.94 },
 
+    //* Lead octave
     { name: 'C4', frequency: 261.63 },
     { name: 'C#4', frequency: 277.18 },
     { name: 'D4', frequency: 293.66 },
@@ -360,7 +340,6 @@ function init() {
     { name: 'A#4', frequency: 466.16 },
     { name: 'B4', frequency: 493.88 }
   ]
-
 
   let activeLeadChord = {
     note1: null,
@@ -388,7 +367,6 @@ function init() {
 
     //* To transpose the notes from octave 3 to 4:
     const leadChord = chord.map(noteName => {
-      // return noteName.replace('3', '4')
       return `${noteName}4`
     })
 
@@ -421,7 +399,6 @@ function init() {
         return note.name === leadChord[3]
       })
     }
-
 
     return [note1[0], note2[0], note3[0], note4[0]]
   }
@@ -471,7 +448,7 @@ function init() {
 
   function setActiveChords() {
     const chordNumber = Math.floor(Math.random() * chords.length)
-    // const chordNumber = 0
+
     activeBassChord = setChord(chords[chordNumber], 'bass')
     activeLeadChord = setChord(chords[chordNumber], 'lead')
     note1display.innerText = `${chords[chordNumber][0]}`
@@ -540,7 +517,6 @@ function init() {
   //* Play sequence
   function handlePlay() {
     if (isPlaying === false) {
-      console.log('play!')
       playheadPosition = 1
       updateCells()
       triggersSample()
@@ -592,7 +568,6 @@ function init() {
     }
   }
 
-
   //* Move playhead
   function movePlayhead() {
     if (playheadPosition == 16) {
@@ -621,18 +596,14 @@ function init() {
     const cellID = event.target.id - 1
     if (cells[cellID].classList.contains('on')) {
       cells[cellID].classList.remove('on')
-      
       const index = activeCells.indexOf(cellID)
       if (index > -1) {
         activeCells.splice(index, 1)
       }
-
     } else {
       cells[cellID].classList.add('on')
       activeCells.push(cellID) 
     }
-
-    console.log(activeCells)
   }
 
   //* ROUTER SECTION
@@ -655,12 +626,9 @@ function init() {
   }
 
   //* Open About content
-
   let aboutIsOpen = false
 
   function openAboutSection() {
-    
-
     if (aboutIsOpen === false) {
       aboutWrapper.classList.add('open')
       aboutContent.classList.add('open')
@@ -672,8 +640,6 @@ function init() {
       about.classList.remove('open')
       aboutIsOpen = false
     }
-    // aboutIcon.classList.add('open')
-    console.log(aboutIsOpen)
   }
 
   //* Event listeners
@@ -697,7 +663,6 @@ function init() {
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
   }
-
 
   //* Preset patterns
   const fourToTheFloor = [176, 180, 184, 188]
@@ -798,14 +763,10 @@ function init() {
 
   function handleBassChangePattern() {
     clearCells('bass')
-    console.log('bass change')
     presetPattern(bassPresets[Math.floor(Math.random() * bassPresets.length)])
   }
 
-
-
   function instrumentClassUpdate(className, action, instrument) {
-
     if (action === 'add') {
       for (let i = 0; i < cells.length; i++) {
         if (cells[i].classList.contains(instrument)) {
@@ -813,9 +774,7 @@ function init() {
         }
       }
     }
-
     if (action === 'remove') {
-      console.log('this is running')
       for (let i = 0; i < cells.length; i++) {
         if (cells[i].classList.contains(instrument)) {
           cells[i].classList.remove(className)
@@ -865,8 +824,6 @@ function init() {
     }
   }
 
-//   presetPattern(synth1Line)
 }
-
 
 window.addEventListener('DOMContentLoaded', init)
