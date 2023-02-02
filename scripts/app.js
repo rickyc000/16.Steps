@@ -9,7 +9,11 @@ function init() {
   const aboutContent = document.querySelector('.about-content')
   const about = document.querySelector('.about')
 
+  //* SYNTHESIS:
+
+  //* our Audio Context:
   const audioContext = new AudioContext()
+
   const buffer = audioContext.createBuffer(
     1,
     audioContext.sampleRate * 1,
@@ -21,10 +25,14 @@ function init() {
     channelData[i] = Math.random() * 2 - 1
   }
 
+  //* Audio nodes:
+
+  //* Main output:
   const primaryGainControl = audioContext.createGain()
   primaryGainControl.gain.setValueAtTime(0.45, 0)
   primaryGainControl.connect(audioContext.destination)
 
+  //* Kick
   const kickGainControl = audioContext.createGain()
   kickGainControl.gain.setValueAtTime(0.75, audioContext.currentTime)
   kickGainControl.connect(primaryGainControl)
@@ -34,6 +42,7 @@ function init() {
   kickFilter.frequency.value = 500
   kickFilter.connect(kickGainControl)
 
+  //* Snare
   const snareGainControl = audioContext.createGain()
   snareGainControl.gain.setValueAtTime(1, audioContext.currentTime)
   snareGainControl.connect(audioContext.destination)
@@ -43,20 +52,24 @@ function init() {
   snareFilter.frequency.value = 750
   snareFilter.connect(primaryGainControl)
 
+  //* Hi Hat
   const hatFilter = audioContext.createBiquadFilter()
   hatFilter.type = 'highpass'
   hatFilter.frequency.value = 3000
   hatFilter.connect(primaryGainControl)
 
+  //* Clap
   const clapFilter = audioContext.createBiquadFilter()
   clapFilter.type = 'lowpass'
   clapFilter.frequency.setValueAtTime(2000, audioContext.currentTime)
   clapFilter.connect(primaryGainControl)
 
+  //* Lead gain:
   const leadGainControl = audioContext.createGain()
   leadGainControl.gain.value = 0.2
   leadGainControl.connect(primaryGainControl)
 
+  //* Bass gain:
   const bassGainControl = audioContext.createGain()
   bassGainControl.gain.setValueAtTime(0.7, audioContext.currentTime)
   bassGainControl.connect(primaryGainControl)
@@ -570,7 +583,7 @@ function init() {
 
   //* Move playhead
   function movePlayhead() {
-    if (playheadPosition == 16) {
+    if (playheadPosition === 16) {
       playheadPosition = 1
     } else {
       playheadPosition = playheadPosition + 1
@@ -608,10 +621,19 @@ function init() {
 
   //* ROUTER SECTION
   function triggersSample() {
+    //* for every cell on the grid:
     for (let i = 0; i < cells.length; i++) {
+
+      //* if cell is within the playhead position:
       if (cells[i].classList.contains(`X${playheadPosition}`)
+
+        //* and the cell is ON:
         && (cells[i].classList.contains('on'))) {
+
+        //* determine the note to play from the cell ID and class
         const noteToPlay = cells[i].classList[0].slice(1) - 1
+        
+        //* determine which instrument to route the instruction to:
         if (cells[i].classList.contains('lead')) {
           playLead(activeLeadChord[noteToPlay].frequency)
         }
@@ -660,6 +682,7 @@ function init() {
   bassChangePattern.addEventListener('click', handleBassChangePattern)
   aboutWrapper.addEventListener('click', openAboutSection)
 
+  //* Add event listeners to grid cells:
   for (let i = 0; i < cells.length; i++) {
     cells[i].addEventListener('click', toggleStepOnOff)
   }
@@ -756,6 +779,7 @@ function init() {
     }
   }
 
+  //* Change synth patterns:
   function handleLeadChangePattern() {
     clearCells('lead')
     presetPattern(leadPresets[Math.floor(Math.random() * leadPresets.length)])
@@ -823,7 +847,6 @@ function init() {
       }
     }
   }
-
 }
 
 window.addEventListener('DOMContentLoaded', init)
